@@ -1,2 +1,2 @@
-# master
-Master thesis 
+# Master Thesis
+by August Dahl and Axel Mikkelsen
