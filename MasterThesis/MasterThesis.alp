@@ -162,7 +162,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1614587091695</Id>
 					<Name><![CDATA[throughput]]></Name>
-					<X>-670</X><Y>240</Y>
+					<X>-670</X><Y>350</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -184,6 +184,51 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[Forklift]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1614957058182</Id>
+					<Name><![CDATA[throughput_product1]]></Name>
+					<X>-670</X><Y>380</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1614957072731</Id>
+					<Name><![CDATA[throughput_product2]]></Name>
+					<X>-670</X><Y>410</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1614957077599</Id>
+					<Name><![CDATA[throughput_product3]]></Name>
+					<X>-670</X><Y>440</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
 					</Properties>
 				</Variable>
 				<Variable Class="Parameter">
@@ -227,6 +272,80 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1614250429095</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1614939118760</Id>
+					<Name><![CDATA[maxProductsOnConveyor]]></Name>
+					<X>-250</X><Y>20</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[8]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1614939118758</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1614939118773</Id>
+					<Name><![CDATA[maxSupplyWaiting]]></Name>
+					<X>-250</X><Y>40</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[5]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1614939118771</Id>
+							<Label><![CDATA[maxRawWaiting]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1614939118781</Id>
+					<Name><![CDATA[maxNumOnFinishConveyor]]></Name>
+					<X>-250</X><Y>60</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[5]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1614939118779</Id>
+							<Label><![CDATA[maxRawWaiting]]></Label>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
@@ -319,7 +438,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 						<ElementClass><![CDATA[PointNode]]></ElementClass>
 						<ValueElementClass><![CDATA[String]]></ValueElementClass>
 						<CollectionInitializer Class="CodeValue">
-							<Code><![CDATA[{nodeInProd1, nodeInProd2, nodeInProd3, nodeInProd4, nodeInProd5, nodeInProd6, nodeInProd7, nodeEnd}]]></Code>
+							<Code><![CDATA[{ nodeInProd1, nodeInProd2, nodeInProd3, nodeInProd4, nodeInProd5, nodeInProd6, nodeInProd7 }]]></Code>
 						</CollectionInitializer>
 					</Properties>
 
@@ -391,12 +510,42 @@ heuristicAction(forklift.getIndex());]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
-						<Name><![CDATA[forkliftId]]></Name>
+						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
-					<Body><![CDATA[Workstation w = workstations.get(0);
-int origin = 0;
-sendTo_supermarket(origin, w.machineNumber, forkliftId);]]></Body>
+					<Body><![CDATA[//check if any process needs raw material
+List<Workstation> list_needRaw = sortDescending(filter(workstations, y -> y.totalProd_inStorageAndExpected() > y.totalSupply_inStorageAndExpected()), x->x.totalProd_inStorageAndExpected() - x.totalSupply_inStorageAndExpected());
+if(list_needRaw.size() > 0){
+	Workstation dest = list_needRaw.get(0); //find machine most in need for raw material
+	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply()) {
+		sendTo_supermarket(3, dest.machineNumber, agentId);
+		return;
+	}
+}
+
+
+			
+//check if there is pick up to be done on process lines
+for(Workstation w : workstations){
+	int origin = w.getIndex();
+	if(w.isPickupPossible()) { //if there is a pickup possible
+		List<Workstation> list = sortAscending(filter(workstations, x -> x.machineNumber == w.machineNumber + 1), y->y.feedProdSize);
+		Workstation dest = list.get(0); //find shortest queue machine for destination
+		if(dest.hasSpaceOnConveyor()){
+			sendTo_workstation(origin, dest.machineNumber, agentId);
+			return;
+		}
+	}
+}
+
+//find first stage machines with shortest queue
+List<Workstation> list_firstStage = sortAscending(filter(workstations, w -> w.processStage == 0), x-> (x.feedSupplySize + x.feedProdSize + x.numExpectedProd + x.numExpectedSupply));
+Workstation dest_firstStage = list_firstStage.get(0);//find shortest queue
+int origin = uniform_discr(0, 2);
+if( supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor()){
+	sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId);
+	return;
+}]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -423,28 +572,90 @@ sendTo_supermarket(origin, w.machineNumber, forkliftId);]]></Body>
 					<Body><![CDATA[Forklift currentForklift = forklifts.get(agentId);
 
 Supermarket sl_origin = supermarkets.get(origin);
+boolean isSupply = !sl_origin.isProduct;
 
 if (!sl_origin.isPickupPossible()) {
-	System.out.println("Pickup not possible");
+	//System.out.println("supermarket: Pickup not possible");
 	return;
 }
 
-System.out.println("Pickup possible");
+//System.out.println("supermarket: Pickup possible");
 Product product = sl_origin.wait.get(0);
 Wait waitBlock = sl_origin.wait;
 
-
-
 Workstation destination = workstations.get(dest_machine);
 
-currentForklift.assignedProduct = product;
-currentForklift.origin = origin;
-currentForklift.deliveryMachine = dest_machine;
 
-product.assignedForklift = currentForklift;
+if( (isSupply && destination.hasSpaceForSupply())
+	|| (!isSupply && destination.hasSpaceOnConveyor()) ){
+		
+	//update expected nembers for destination
+	if(isSupply)
+		destination.numExpectedSupply++;
+	else
+		destination.numExpectedProd++;
+	
+	currentForklift.assignedProduct = product;
+	currentForklift.origin = origin;
+	currentForklift.deliveryMachine = dest_machine;
 
-waitBlock.freeAll();
-	]]></Body>
+	product.assignedForklift = currentForklift;
+
+	waitBlock.freeAll();
+}
+]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1614943831537</Id>
+					<Name><![CDATA[sendTo_workstation]]></Name>
+					<X>-220</X><Y>430</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[origin]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[dest_machine]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[agentId]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[Forklift currentForklift = forklifts.get(agentId);
+Workstation w_origin = workstations.get(origin);
+
+
+//its empty or already assigned to another AGVs
+if(!w_origin.isPickupPossible()){ 
+	System.out.println("workstation: Pickup not possible");
+	return;
+}
+
+System.out.println("workstation: Pickup possible");
+Product product = w_origin.wait.get(0);
+Wait waitBlock = w_origin.wait;
+
+//one stage to the next
+Workstation destination = workstations.get(dest_machine);
+
+if(destination.hasSpaceOnConveyor()){	//is there space in destination
+	
+	//update expected nembers for destination
+	destination.numExpectedProd++;
+		
+	currentForklift.assignedProduct = product;
+	currentForklift.origin = origin;
+	currentForklift.deliveryMachine = dest_machine;
+	product.assignedForklift = currentForklift;
+	waitBlock.freeAll();
+	
+}]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -539,7 +750,7 @@ waitBlock.freeAll();
 				<EmbeddedObject>
 					<Id>1614173436745</Id>
 					<Name><![CDATA[transporterFleet]]></Name>
-					<X>-280</X><Y>200</Y>
+					<X>-470</X><Y>50</Y>
 					<Label><X>45</X><Y>5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1023,7 +1234,7 @@ unit.delay.stopDelayForAll();]]></Code>
 					<ZHeight>20</ZHeight>
 					<Rotation>0.0</Rotation>
 					<Width>990</Width>
-					<Height>550</Height>
+					<Height>760</Height>
 				</RectangleWall>
 				<Wall>
 					<Id>1614172741073</Id>
@@ -4388,6 +4599,83 @@ unit.delay.stopDelayForAll();]]></Code>
 						<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
 					</SpeedLimitValue>
 				</PointNode>
+    			<BarChart>
+					<Id>1614957267095</Id>
+					<Name><![CDATA[chart1]]></Name>
+					<X>610</X><Y>500</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>true</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1602835200000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>360</Width>
+					<Height>260</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<ChartArea>
+						<XOffset>50</XOffset>
+						<YOffset>30</YOffset>
+						<Width>280</Width>
+						<Height>150</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-16777216</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>70</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>true</ShowLegend>
+					<DataItem>
+					<Expression><![CDATA[throughput_product1]]></Expression>
+					<Color>-12490271</Color>
+					<Expression2Flag>true</Expression2Flag>
+						<Title><![CDATA[Product1]]></Title>
+					</DataItem>
+					<DataItem>
+					<Expression><![CDATA[throughput_product2]]></Expression>
+					<Color>-16744320</Color>
+					<Expression2Flag>true</Expression2Flag>
+						<Title><![CDATA[Product2]]></Title>
+					</DataItem>
+					<DataItem>
+					<Expression><![CDATA[throughput_product3]]></Expression>
+					<Color>-2592621</Color>
+					<Expression2Flag>true</Expression2Flag>
+						<Title><![CDATA[Product3]]></Title>
+					</DataItem>
+					<DataItem>
+					<Expression><![CDATA[throughput]]></Expression>
+					<Color>-2448096</Color>
+					<Expression2Flag>true</Expression2Flag>
+						<Title><![CDATA[Total throughput]]></Title>
+					</DataItem>
+					<ScaleFromExpression><![CDATA[0]]></ScaleFromExpression>
+					<ScaleToExpression><![CDATA[1]]></ScaleToExpression>
+					<ScaleType>AUTO</ScaleType>
+					<Bars>
+						<Direction>UP</Direction>
+						<RelativeWidth>0.8</RelativeWidth>
+					</Bars>
+    			</BarChart>
 			</Presentation>
 
 				</Level>
@@ -6009,7 +6297,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<Variable Class="PlainVariable">
 					<Id>1614247042441</Id>
 					<Name><![CDATA[isProduct]]></Name>
-					<X>80</X><Y>90</Y>
+					<X>80</X><Y>80</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6292,6 +6580,31 @@ unit.delay.stopDelayForAll();]]></Code>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[return wait.size() > 0 //there are products available for pickup 
 		&& ((Product)(wait.get(0))).assignedForklift == null; //it's not already assigned ]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[Workstation]]></ReturnType>
+					<Id>1614940200523</Id>
+					<Name><![CDATA[sendToStartWorkstation]]></Name>
+					<X>60</X><Y>120</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[product]]></Name>
+						<Type><![CDATA[Product]]></Type>
+					</Parameter>
+					<Body><![CDATA[switch(product.productType) {
+	case 0: 
+		return main.workstations.get(0);
+	case 1:
+		return main.workstations.get(1);
+	case 2: 
+		return main.workstations.get(2);
+	default: 
+		return null;
+}]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -7346,9 +7659,6 @@ main.supplyEntry]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[System.out.println("Seizing");]]></Code>
-							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onSeizeTransporter]]></Name>
@@ -7432,7 +7742,13 @@ main.supplyEntry]]></Code>
 							<Name><![CDATA[onExit]]></Name>
 							<Value Class="CodeValue">
 								<Code><![CDATA[int machine = agent.assignedForklift.deliveryMachine;
-main.workstations.get(machine).enter.take(agent); 
+Workstation w = sendToStartWorkstation(agent);
+
+if (isProduct) {
+	w.enter.take(agent); 	
+} else {
+	main.workstations.get(machine).enter.take(agent); 
+}
 
 source.inject(1);]]></Code>
 							</Value>
@@ -7538,9 +7854,6 @@ source.inject(1);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[System.out.println("In wait");]]></Code>
-							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExit]]></Name>
@@ -8305,6 +8618,93 @@ source.inject(1);]]></Code>
 			<CurrentLevel>1614257976513</CurrentLevel>
 			<ConnectionsId>1614257976509</ConnectionsId>
 			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1614939266812</Id>
+					<Name><![CDATA[feedProdSize]]></Name>
+					<X>160</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1614939266817</Id>
+					<Name><![CDATA[feedSupplySize]]></Name>
+					<X>160</X><Y>460</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1614939266822</Id>
+					<Name><![CDATA[numExpectedProd]]></Name>
+					<X>160</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1614939266828</Id>
+					<Name><![CDATA[numExpectedSupply]]></Name>
+					<X>160</X><Y>480</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1614958308838</Id>
+					<Name><![CDATA[productType]]></Name>
+					<X>50</X><Y>90</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[Product]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1614958320879</Id>
+					<Name><![CDATA[processStage]]></Name>
+					<X>50</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[//getProcessStage(productType);]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1614600478856</Id>
 					<Name><![CDATA[machineNumber]]></Name>
@@ -8994,6 +9394,139 @@ source.inject(1);]]></Code>
 					</Points>
 				</Connector>
 			</Connectors>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[Workstation]]></ReturnType>
+					<Id>1614935303707</Id>
+					<Name><![CDATA[nextDestination]]></Name>
+					<X>50</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[product]]></Name>
+						<Type><![CDATA[Product]]></Type>
+					</Parameter>
+					<Body><![CDATA[switch(product.productType) {
+	case 0:
+		if (product.stagesComplete == 1) {
+			return main.workstations.get(2);
+		} else if (product.stagesComplete == 2) {
+			return main.workstations.get(4);
+		}
+	case 1:
+		if (product.stagesComplete == 1) {
+			return main.workstations.get(3);
+		} else if (product.stagesComplete == 2) {
+			return main.workstations.get(5);
+		}
+	case 2:
+		if (product.stagesComplete == 1) {
+			return main.workstations.get(4);
+		} else if (product.stagesComplete == 2) {
+			return main.workstations.get(6);
+		}
+	default:
+		return null;
+}]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1614939266789</Id>
+					<Name><![CDATA[hasSpaceOnConveyor]]></Name>
+					<X>160</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return feedProdSize + numExpectedProd < main.maxProductsOnConveyor;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1614939266796</Id>
+					<Name><![CDATA[hasSpaceForSupply]]></Name>
+					<X>160</X><Y>440</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return feedSupplySize + numExpectedSupply < main.maxSupplyWaiting;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1614939266801</Id>
+					<Name><![CDATA[totalProd_inStorageAndExpected]]></Name>
+					<X>160</X><Y>370</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return feedProdSize + numExpectedProd;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1614939266806</Id>
+					<Name><![CDATA[totalSupply_inStorageAndExpected]]></Name>
+					<X>160</X><Y>500</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return feedSupplySize + numExpectedSupply;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1614945390011</Id>
+					<Name><![CDATA[isPickupPossible]]></Name>
+					<X>1180</X><Y>60</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return wait.size() > 0 //there are products available for pickup 
+		&& ((Product)(wait.get(0))).assignedForklift == null; //it's not already assigned to another ]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1614945761826</Id>
+					<Name><![CDATA[getProcessStage]]></Name>
+					<X>50</X><Y>170</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[product]]></Name>
+						<Type><![CDATA[Product]]></Type>
+					</Parameter>
+					<Body><![CDATA[switch(machineNumber) {
+	case 0:
+		return 1;
+	case 1:
+		return 1;
+	case 2:
+		return product.productType == 0 ? 2 : 1;
+	case 3:
+		return 2;
+	case 4:
+		return product.productType == 0 ? 3 : 2;
+	case 5:
+		return 3;
+	case 6:
+		return 3;
+	default:
+		return -1;
+}]]></Body>
+				</Function>
+			</Functions>
 			<AgentLinks>
 				<AgentLink>
 					<Id>1614257976509</Id>
@@ -9184,7 +9717,7 @@ source.inject(1);]]></Code>
 					<Id>1614585716061</Id>
 					<Name><![CDATA[moveToProd]]></Name>
 					<X>440</X><Y>120</Y>
-					<Label><X>-40</X><Y>-30</Y></Label>
+					<Label><X>-15</X><Y>40</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -10265,6 +10798,9 @@ source.inject(1);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onEnter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[productType = agent;]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onRemove]]></Name>
@@ -10971,6 +11507,10 @@ source.inject(1);]]></Code>
 					<Parameters>
 						<Parameter>
 							<Name><![CDATA[onExit]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[Workstation w = nextDestination(agent);
+w.enter.take(agent);]]></Code>
+							</Value>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>false</ReplicationFlag>
@@ -11389,7 +11929,7 @@ source.inject(1);]]></Code>
 						<Parameter>
 							<Name><![CDATA[condition]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[agent.stagesComplete != 3]]></Code>
+								<Code><![CDATA[agent.stagesComplete <= 3]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -12070,12 +12610,21 @@ source.inject(1);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[customizeTransporterChoice]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[transporterChoiceCondition]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[agent.assignedForklift == ((Forklift)unit)]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[dispatchingPolicy]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.DISPATCHING_POLICY_SOME_TRANSPORTER]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[transporterComparison]]></Name>
@@ -12085,6 +12634,9 @@ source.inject(1);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[canceledMovingPolicy]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.MP_STAYS_WHERE_IT_IS]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[canceledDestinationType]]></Name>
@@ -12235,6 +12787,9 @@ source.inject(1);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[destinationNode]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[main.nodeEnd]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[destinationConveyor]]></Name>
@@ -12277,6 +12832,9 @@ source.inject(1);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[seizeTransporter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[false]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[fleet]]></Name>
@@ -12578,7 +13136,20 @@ source.inject(1);]]></Code>
 						<Parameter>
 							<Name><![CDATA[onEnter]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[main.throughput++;]]></Code>
+								<Code><![CDATA[switch(agent.productType) {
+	case 0:
+		main.throughput_product1++;
+		break;
+	case 1: 
+		main.throughput_product2++;
+		break;
+	case 2:
+		main.throughput_product3++;
+		break;
+	default:
+		break;
+}
+main.throughput++;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -13380,6 +13951,48 @@ source.inject(1);]]></Code>
 
 					<Z>0</Z>
 				</ConveyorNetwork>
+				<Text>
+					<Id>1614939411257</Id>
+					<Name><![CDATA[text]]></Name>
+					<X>160</X><Y>280</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Product-related variables]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1614939465016</Id>
+					<Name><![CDATA[text1]]></Name>
+					<X>160</X><Y>410</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Supply-related variables]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
 			</Presentation>
 
 				</Level>
@@ -13396,7 +14009,7 @@ source.inject(1);]]></Code>
 	<TimeAccuracy>1.0E-5</TimeAccuracy>
 	<Frame>
 		<Width>1000</Width>
-		<Height>600</Height>
+		<Height>810</Height>
 	</Frame>
 	<Database>
 		<Logging>false</Logging>
@@ -13477,6 +14090,15 @@ source.inject(1);]]></Code>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[conveyorSpeed]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[maxProductsOnConveyor]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[maxSupplyWaiting]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[maxNumOnFinishConveyor]]></ParameterName>
 				</Parameter>
 			</Parameters>			
 			<PresentationProperties>
