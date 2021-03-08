@@ -4465,7 +4465,7 @@ unit.delay.stopDelayForAll();]]></Code>
 					<X>355</X><Y>170</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<Z>0</Z>
@@ -4485,7 +4485,7 @@ unit.delay.stopDelayForAll();]]></Code>
 					<X>155</X><Y>95</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<Z>0</Z>
@@ -4505,7 +4505,7 @@ unit.delay.stopDelayForAll();]]></Code>
 					<X>145</X><Y>420</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<Z>0</Z>
@@ -4525,7 +4525,7 @@ unit.delay.stopDelayForAll();]]></Code>
 					<X>180</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<Z>0</Z>
@@ -4545,7 +4545,7 @@ unit.delay.stopDelayForAll();]]></Code>
 					<X>400</X><Y>445</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<Z>0</Z>
@@ -4565,7 +4565,7 @@ unit.delay.stopDelayForAll();]]></Code>
 					<X>540</X><Y>440</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<Z>0</Z>
@@ -4585,7 +4585,7 @@ unit.delay.stopDelayForAll();]]></Code>
 					<X>155</X><Y>355</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<Z>0</Z>
@@ -11929,7 +11929,7 @@ w.enter.take(agent);]]></Code>
 						<Parameter>
 							<Name><![CDATA[condition]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[agent.stagesComplete <= 3]]></Code>
+								<Code><![CDATA[agent.stagesComplete < 3]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -11943,9 +11943,15 @@ w.enter.take(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExitTrue]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[System.out.println("Not finished, stagesComplete=" + agent.stagesComplete);]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExitFalse]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[System.out.println("FINISHED!");]]></Code>
+							</Value>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>false</ReplicationFlag>
@@ -12601,6 +12607,9 @@ w.enter.take(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[priority]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[1]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[taskMayPreemptOtherTasks]]></Name>
@@ -12694,6 +12703,9 @@ w.enter.take(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onEnter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[System.out.println("Transporter finished seized")]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onSeizeTransporter]]></Name>
@@ -13039,6 +13051,9 @@ w.enter.take(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onEnter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[System.out.println("Moving to Workstation End")]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onAtExit]]></Name>
