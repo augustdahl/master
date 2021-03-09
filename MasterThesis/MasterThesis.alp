@@ -288,11 +288,11 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
+						<Type><![CDATA[int]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[8]]></Code>
+							<Code><![CDATA[3]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1614939118758</Id>
@@ -312,11 +312,11 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
+						<Type><![CDATA[int]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[5]]></Code>
+							<Code><![CDATA[3]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1614939118771</Id>
@@ -337,7 +337,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
+						<Type><![CDATA[int]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
@@ -518,6 +518,8 @@ List<Workstation> list_needRaw = sortDescending(filter(workstations, y -> y.tota
 if(list_needRaw.size() > 0){
 	Workstation dest = list_needRaw.get(0); //find machine most in need for raw material
 	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply()) {
+		System.out.println("Sending SUPPLY to workstation " + dest.machineNumber);
+		System.out.println("Number of supply on line: " + dest.totalSupply_inStorageAndExpected());
 		sendTo_supermarket(3, dest.machineNumber, agentId);
 		return;
 	}
@@ -543,6 +545,8 @@ List<Workstation> list_firstStage = sortAscending(filter(workstations, w -> w.pr
 Workstation dest_firstStage = list_firstStage.get(0);//find shortest queue
 int origin = uniform_discr(0, 2);
 if( supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor()){
+	System.out.println("Sending PRODUCT to workstation " + dest_firstStage.machineNumber);
+	System.out.println("Number of products on line: " + dest_firstStage.totalProd_inStorageAndExpected());
 	sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId);
 	return;
 }]]></Body>
@@ -10891,9 +10895,17 @@ source.inject(1);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExitTrue]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[feedProdSize++;
+numExpectedProd--;]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExitFalse]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[feedSupplySize++;
+numExpectedSupply--;]]></Code>
+							</Value>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>false</ReplicationFlag>
@@ -11193,7 +11205,9 @@ source.inject(1);]]></Code>
 						<Parameter>
 							<Name><![CDATA[onAtExit]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[agent.stagesComplete++;]]></Code>
+								<Code><![CDATA[agent.stagesComplete++;
+feedProdSize--;
+feedSupplySize--;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -11943,15 +11957,9 @@ w.enter.take(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExitTrue]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[System.out.println("Not finished, stagesComplete=" + agent.stagesComplete);]]></Code>
-							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExitFalse]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[System.out.println("FINISHED!");]]></Code>
-							</Value>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>false</ReplicationFlag>
