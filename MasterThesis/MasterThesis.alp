@@ -595,19 +595,13 @@ if( supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnCon
 Supermarket sl_origin = supermarkets.get(origin);
 boolean isSupply = !sl_origin.isProduct;
 
-//if not raw, it has to be delivered to stage 0
+//if not supply, it has to be delivered to ws 0, 1, or 2
 if(!isSupply){
 	if (!(dest_machine == 0 || dest_machine == 1 || dest_machine == 2)){	// neq 1,2,3
 		currentForklift.invalidAction++;
 		return;
 	}
 }
-
-//System.out.println(currentForklift.invalidAction);
-if (!isSupply) {
-	System.out.println("[sendTo_SM]\nOrigin SM: " + sl_origin + "\ndest_machine: " + dest_machine + "\n");
-}
-//System.out.println("[sendTo_SM]\nOrigin SM: " + sl_origin + "\ndest_machine: " + dest_machine + "\n");
 
 if (!sl_origin.isPickupPossible()) {
 	//System.out.println("supermarket: Pickup not possible");
