@@ -353,6 +353,30 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="Parameter">
+					<Id>1615447310971</Id>
+					<Name><![CDATA[isPathmindEnabled]]></Name>
+					<X>-230</X><Y>600</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[boolean]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[true]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1615447310969</Id>
+							<EditorContolType>CHECK_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1614246580858</Id>
 					<Name><![CDATA[supermarketCollection]]></Name>
@@ -497,7 +521,11 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 					</Parameter>
 					<Body><![CDATA[currentForklift = forklift;
 
-heuristicAction(forklift.getIndex());]]></Body>
+if (isPathmindEnabled) {
+	pathmindHelper.triggerNextAction();
+} else {
+	heuristicAction(forklift.getIndex());
+}]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -594,10 +622,12 @@ if( supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnCon
 
 Supermarket sl_origin = supermarkets.get(origin);
 boolean isSupply = !sl_origin.isProduct;
+//System.out.println("sendTo_supermarket");
 
 //if not supply, it has to be delivered to ws 0, 1, or 2
 if(!isSupply){
 	if (!(dest_machine == 0 || dest_machine == 1 || dest_machine == 2)){	// neq 1,2,3
+		//System.out.println("Invalid action!");
 		currentForklift.invalidAction++;
 		return;
 	}
@@ -626,6 +656,7 @@ if( (isSupply && destination.hasSpaceForSupply())
 	
 	currentForklift.assignedProduct = product;
 	currentForklift.origin = origin;
+	//System.out.println("sendTo_supermarket machine: " + dest_machine);
 	currentForklift.deliveryMachine = dest_machine;
 
 	product.assignedForklift = currentForklift;
@@ -696,6 +727,7 @@ if(destination.hasSpaceOnConveyor()){	//is there space in destination
 	currentForklift.origin = origin;
 	currentForklift.deliveryMachine = dest_machine;
 	product.assignedForklift = currentForklift;
+	
 	waitBlock.freeAll();
 	
 }]]></Body>
@@ -738,6 +770,161 @@ currentForklift.origin = origin;
 currentForklift.deliveryMachine = 7;
 product.assignedForklift = currentForklift;
 waitBlock.freeAll();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double []]]></ReturnType>
+					<Id>1615445654000</Id>
+					<Name><![CDATA[getObs_Forklift]]></Name>
+					<X>-480</X><Y>570</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[agentId]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[double[] obs = new double[6*numberOfForklifts];
+int count = 0;
+
+for ( Forklift agent : forklifts ) {
+	obs[count++] = agent.getIndex() == agentId ? 1 : 0;
+	obs[count++] = agent.getX() / wall.getWidth();
+	obs[count++] = agent.getY() / wall.getHeight();
+	
+	obs[count++] = agent.isBusy() ? 1 : 0 ;
+	obs[count++] = agent.isBusy() ? (double)agent.origin / 10. : -1; //last action
+	
+	obs[count++] = agent.isBusy() ? agent.deliveryMachine / 3.0 : -1;
+}
+
+return obs;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double []]]></ReturnType>
+					<Id>1615445654006</Id>
+					<Name><![CDATA[getObs_workstation_inventory]]></Name>
+					<X>-480</X><Y>610</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[double[] obs = new double[5*workstations.size()];
+
+int count = 0;
+for ( Workstation w : workstations ) {
+	obs[count++] = w.feedProdSize;
+	obs[count++] = w.numExpectedProd;
+	
+	obs[count++] = w.feedSupplySize;
+	obs[count++] = w.numExpectedSupply;
+	
+	obs[count++] = w.isProcessPickupPossible() ? 1 : 0;
+}
+
+return obs;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double[]]]></ReturnType>
+					<Id>1615445654011</Id>
+					<Name><![CDATA[getObs_Forklift_selfOnly]]></Name>
+					<X>-480</X><Y>590</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[agentId]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[double[] obs = new double[2];
+int count = 0;
+
+Forklift agent = forklifts. get(agentId);
+
+obs[count++] = agent.getX() / wall.getWidth();
+obs[count++] = agent.getY() / wall.getHeight();
+	
+
+
+return obs;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double []]]></ReturnType>
+					<Id>1615445654015</Id>
+					<Name><![CDATA[getObs_supermarket]]></Name>
+					<X>-480</X><Y>630</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[double[] obs = new double[supermarkets.size()];
+
+int count = 0;
+for ( Supermarket s : supermarkets ) {
+	obs[count++] = s.isPickupPossible() ? 1 : 0;
+}
+
+return obs;]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[SelectOutputOut]]></ReturnType>
+					<Id>1615446184444</Id>
+					<Name><![CDATA[doAction]]></Name>
+					<X>-480</X><Y>670</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[origin]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[dest_machine]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[agentId]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[
+if(origin < 4) { 
+	//origin is one of 4 supermarkets
+	sendTo_supermarket(origin, dest_machine, agentId);
+}
+
+else if(origin < 11) {
+	//origin is one of 7 workstations
+	int new_origin = origin-4;
+	Workstation w = workstations.get(new_origin);
+	if (w.isFinishPickupPossible() && w.productReadyForEnd != null) {
+		sendTo_finish(new_origin, agentId);
+	} else {
+		sendTo_workstation(new_origin, dest_machine, agentId); 
+	}
+}]]></Body>
+				</Function>
+				<Function AccessType="public" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1615449855814</Id>
+					<Name><![CDATA[isSkip]]></Name>
+					<X>-230</X><Y>630</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[agentId]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[return (currentForklift != forklifts.get(agentId));]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -1271,6 +1458,146 @@ unit.delay.stopDelayForAll();]]></Code>
 						<Code><![CDATA[0]]></Code>
 					</LongitudeCode>
 					<NodeCode><![CDATA[workstationInput_node.get(index)]]></NodeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1615445426648</Id>
+					<Name><![CDATA[pathmindHelper]]></Name>
+					<X>-240</X><Y>550</Y>
+					<Label><X>35</X><Y>20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[pathmind.policyhelper]]></PackageName>
+						<ClassName><![CDATA[PathmindHelper]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[pathmind.policyhelper]]></PackageName>
+							<ClassName><![CDATA[PathmindHelper]]></ClassName>
+							<ItemName><![CDATA[1563534160693]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[isEnabled]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[debugMode]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[false]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[usePolicy]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[policyFile]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[numberOfAgents]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[numberOfForklifts]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[observations]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[class Observations {
+    //Forklift observations
+	double[] forklifts_self = getObs_Forklift_selfOnly(agentId);
+	//Manufacturing center observations
+	double[] supermarkets = getObs_supermarket();
+	double[] w_inventory = getObs_workstation_inventory();
+}]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[rewardVariables]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[class Metrics {
+    int totalThroughput = throughput;
+}]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actions]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[class Actions {
+	//4 supermarket pickup points + 7 workstations
+   @Discrete(n = 11, size = 1) int origin; 
+   @Discrete(n = 7, size = 1) int destination_machine;
+   
+   void doIt() { doAction(origin, destination_machine, agentId);};
+}]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actionMasks]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[isSkipCondition]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[isSkip(agentId)]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[isDone]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[useEventTrigger]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[false]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[firstOccurrence]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[recurrence]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[eventCondition]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
 					<LocationNameCode Class="CodeValue">
 						<Code><![CDATA[""]]></Code>
 					</LocationNameCode>
@@ -7774,6 +8101,9 @@ main.supplyEntry]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExit]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[//System.out.println("Assigned agent: " + main.forklifts.get(agent.assignedForklift.getIndex()));]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onTaskSuspended]]></Name>
@@ -7849,7 +8179,7 @@ main.supplyEntry]]></Code>
 							<Value Class="CodeValue">
 								<Code><![CDATA[int machine = agent.assignedForklift.deliveryMachine;
 Workstation w = sendToStartWorkstation(agent);
-
+//System.out.println("Machine number: " + machine);
 if (isProduct) {
 	w.enter.take(agent); 	
 } else {
@@ -14599,6 +14929,9 @@ productReadyForEnd = null;]]></Code>
 				<Parameter>
 					<ParameterName><![CDATA[maxNumOnFinishConveyor]]></ParameterName>
 				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[isPathmindEnabled]]></ParameterName>
+				</Parameter>
 			</Parameters>			
 			<PresentationProperties>
 				<EnableZoomAndPanning>true</EnableZoomAndPanning>
@@ -14626,8 +14959,14 @@ productReadyForEnd = null;]]></Code>
 			<MaximumMemory>16384</MaximumMemory>
 			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
-			<BeforeEachExperimentRunCode><![CDATA[heuristic_throughput.reset();]]></BeforeEachExperimentRunCode>
-			<AfterSimulationRunCode><![CDATA[heuristic_throughput.add( root.throughput );]]></AfterSimulationRunCode>
+			<BeforeEachExperimentRunCode><![CDATA[heuristic_throughput.reset();
+heuristic_throughput_product1.reset();
+heuristic_throughput_product2.reset();
+heuristic_throughput_product3.reset();]]></BeforeEachExperimentRunCode>
+			<AfterSimulationRunCode><![CDATA[heuristic_throughput.add(root.throughput);
+heuristic_throughput_product1.add(root.throughput_product1);
+heuristic_throughput_product2.add(root.throughput_product2);
+heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
@@ -14637,6 +14976,99 @@ productReadyForEnd = null;]]></Code>
 					<Id>1615294234771</Id>
 					<Name><![CDATA[heuristic_throughput]]></Name>
 					<X>50</X><Y>500</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>false</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1602921600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+					<Value><![CDATA[]]></Value>
+					<NumberOfIntervals>30</NumberOfIntervals>
+					<MinMaxAutodetect>true</MinMaxAutodetect>
+					<RangeMinExpression><![CDATA[0]]></RangeMinExpression>
+					<RangeMaxExpression><![CDATA[1]]></RangeMaxExpression>
+					<InitialIntervalSize><![CDATA[1]]></InitialIntervalSize>
+					<CalculateCDF>true</CalculateCDF>
+					<CalculatePercentiles>false</CalculatePercentiles>
+					<LowPercent>10</LowPercent>
+					<HighPercent>10</HighPercent>
+					<Title><![CDATA[]]></Title>
+				</HistogramData>
+    			<HistogramData>
+					<Id>1615390608999</Id>
+					<Name><![CDATA[heuristic_throughput_product1]]></Name>
+					<X>50</X><Y>530</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>false</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1602921600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+					<Value><![CDATA[]]></Value>
+					<NumberOfIntervals>30</NumberOfIntervals>
+					<MinMaxAutodetect>true</MinMaxAutodetect>
+					<RangeMinExpression><![CDATA[0]]></RangeMinExpression>
+					<RangeMaxExpression><![CDATA[1]]></RangeMaxExpression>
+					<InitialIntervalSize><![CDATA[1]]></InitialIntervalSize>
+					<CalculateCDF>true</CalculateCDF>
+					<CalculatePercentiles>false</CalculatePercentiles>
+					<LowPercent>10</LowPercent>
+					<HighPercent>10</HighPercent>
+					<Title><![CDATA[]]></Title>
+				</HistogramData>
+    			<HistogramData>
+					<Id>1615390634155</Id>
+					<Name><![CDATA[heuristic_throughput_product2]]></Name>
+					<X>50</X><Y>560</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>false</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1602921600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+					<Value><![CDATA[]]></Value>
+					<NumberOfIntervals>30</NumberOfIntervals>
+					<MinMaxAutodetect>true</MinMaxAutodetect>
+					<RangeMinExpression><![CDATA[0]]></RangeMinExpression>
+					<RangeMaxExpression><![CDATA[1]]></RangeMaxExpression>
+					<InitialIntervalSize><![CDATA[1]]></InitialIntervalSize>
+					<CalculateCDF>true</CalculateCDF>
+					<CalculatePercentiles>false</CalculatePercentiles>
+					<LowPercent>10</LowPercent>
+					<HighPercent>10</HighPercent>
+					<Title><![CDATA[]]></Title>
+				</HistogramData>
+    			<HistogramData>
+					<Id>1615390638160</Id>
+					<Name><![CDATA[heuristic_throughput_product3]]></Name>
+					<X>50</X><Y>590</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -15089,7 +15521,7 @@ productReadyForEnd = null;]]></Code>
 					</Bars>
 					<HistogramDataExpression>
 					<Expression><![CDATA[heuristic_throughput]]></Expression>
-						<ColorPDF>-16744320</ColorPDF>
+						<ColorPDF>-2448096</ColorPDF>
 						<ColorCDF>-2354116</ColorCDF>
 						<ColorLowPercent>-2354116</ColorLowPercent>
 						<ColorHighPercent>-8097537</ColorHighPercent>
@@ -15098,11 +15530,94 @@ productReadyForEnd = null;]]></Code>
 						<Title><![CDATA[Random- Throughput]]></Title>							
 					</HistogramDataExpression>
     			</Histogram>
+    			<Histogram>
+					<Id>1615390648891</Id>
+					<Name><![CDATA[histogram1]]></Name>
+					<X>400</X><Y>60</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>false</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1602921600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>371.16236722306525</Width>
+					<Height>250</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<ChartArea>
+						<XOffset>30</XOffset>
+						<YOffset>20</YOffset>
+						<Width>281.16236722306525</Width>
+						<Height>170</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-9868951</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>30</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>false</ShowLegend>
+					<ShowPDF>true</ShowPDF>
+					<ShowCDF>false</ShowCDF>
+					<ShowMean>true</ShowMean>
+					<Bars>
+						<Direction>UP</Direction>
+						<RelativeWidth>0.73</RelativeWidth>
+					</Bars>
+					<HistogramDataExpression>
+					<Expression><![CDATA[heuristic_throughput_product1]]></Expression>
+						<ColorPDF>-12490271</ColorPDF>
+						<ColorCDF>-2354116</ColorCDF>
+						<ColorLowPercent>-2354116</ColorLowPercent>
+						<ColorHighPercent>-8097537</ColorHighPercent>
+						<ColorMean>-12490271</ColorMean>
+						<LineWidth>1</LineWidth>						
+						<Title><![CDATA[Product 1]]></Title>							
+					</HistogramDataExpression>
+					<HistogramDataExpression>
+					<Expression><![CDATA[heuristic_throughput_product2]]></Expression>
+						<ColorPDF>-16744320</ColorPDF>
+						<ColorCDF>-10496</ColorCDF>
+						<ColorLowPercent>-10496</ColorLowPercent>
+						<ColorHighPercent>-60269</ColorHighPercent>
+						<ColorMean>-16744320</ColorMean>
+						<LineWidth>1</LineWidth>						
+						<Title><![CDATA[Product 2]]></Title>							
+					</HistogramDataExpression>
+					<HistogramDataExpression>
+					<Expression><![CDATA[heuristic_throughput_product3]]></Expression>
+						<ColorPDF>-2592621</ColorPDF>
+						<ColorCDF>-6632142</ColorCDF>
+						<ColorLowPercent>-6632142</ColorLowPercent>
+						<ColorHighPercent>-29696</ColorHighPercent>
+						<ColorMean>-2592621</ColorMean>
+						<LineWidth>1</LineWidth>						
+						<Title><![CDATA[Product 3]]></Title>							
+					</HistogramDataExpression>
+    			</Histogram>
 			</Presentation>
 
 			<AllowParallelEvaluations>true</AllowParallelEvaluations>
 			<UseFreeformParameters>true</UseFreeformParameters>
-			<NumberOfRuns>100</NumberOfRuns>
+			<NumberOfRuns>10000</NumberOfRuns>
 			<FreeformParamValue>	
 				<Id>1614173363216</Id>
 			</FreeformParamValue>
@@ -15118,6 +15633,9 @@ productReadyForEnd = null;]]></Code>
 			<FreeformParamValue>	
 				<Id>1614939118781</Id>
 			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1615447310971</Id>
+			</FreeformParamValue>
 			<RangeVariationParamValue>	
 				<Id>1614173363216</Id>
 				<Type>FIXED</Type>
@@ -15136,6 +15654,10 @@ productReadyForEnd = null;]]></Code>
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
 				<Id>1614939118781</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1615447310971</Id>
 				<Type>FIXED</Type>
 			</RangeVariationParamValue>
 			<ModelTimeProperties>
@@ -15195,6 +15717,12 @@ productReadyForEnd = null;]]></Code>
 		<LibraryName><![CDATA[pathmind_agv_tutorial]]></LibraryName>
 		<VersionMajor>0</VersionMajor>
 		<VersionMinor>0</VersionMinor>
+		<VersionBuild>0</VersionBuild>
+    </RequiredLibraryReference>
+    <RequiredLibraryReference>
+		<LibraryName><![CDATA[pathmind.policyhelper]]></LibraryName>
+		<VersionMajor>1</VersionMajor>
+		<VersionMinor>4</VersionMinor>
 		<VersionBuild>0</VersionBuild>
     </RequiredLibraryReference>
 </Model>
