@@ -366,7 +366,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[false]]></Code>
+							<Code><![CDATA[true]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1615447310969</Id>
@@ -2764,14 +2764,14 @@ unit.delay.stopDelayForAll();]]></Code>
 									<IsAgentEntity>false</IsAgentEntity>
 									<EntityEmbeddedObject>
 										<ActiveObjectClass>
-											<PackageName><![CDATA[pathmind_agv_tutorial]]></PackageName>
+											<PackageName><![CDATA[masterthesis]]></PackageName>
 											<ClassName><![CDATA[Product]]></ClassName>
 										</ActiveObjectClass>
 										<GenericParameterSubstitute>
 											<GenericParameterSubstituteReference>
-												<PackageName><![CDATA[pathmind_agv_tutorial]]></PackageName>
+												<PackageName><![CDATA[masterthesis]]></PackageName>
 												<ClassName><![CDATA[Product]]></ClassName>
-												<ItemName><![CDATA[1582734698197]]></ItemName>
+												<ItemName><![CDATA[1614245924913]]></ItemName>
 											</GenericParameterSubstituteReference>
 										</GenericParameterSubstitute>
 										<Parameters>
@@ -8411,14 +8411,14 @@ source.inject(1);]]></Code>
 								<IsAgentEntity>true</IsAgentEntity>
 								<EntityEmbeddedObject>
 									<ActiveObjectClass>
-										<PackageName><![CDATA[pathmind_agv_tutorial]]></PackageName>
+										<PackageName><![CDATA[masterthesis]]></PackageName>
 										<ClassName><![CDATA[Worker]]></ClassName>
 									</ActiveObjectClass>
 									<GenericParameterSubstitute>
 										<GenericParameterSubstituteReference>
-											<PackageName><![CDATA[pathmind_agv_tutorial]]></PackageName>
+											<PackageName><![CDATA[masterthesis]]></PackageName>
 											<ClassName><![CDATA[Worker]]></ClassName>
-											<ItemName><![CDATA[1583145417454]]></ItemName>
+											<ItemName><![CDATA[1615457525984]]></ItemName>
 										</GenericParameterSubstituteReference>
 									</GenericParameterSubstitute>
 									<Parameters>
@@ -14791,6 +14791,144 @@ productReadyForEnd = null;]]></Code>
 			</Presentation>
 
 		</ActiveObjectClass>
+		<!--   =========   Active Object Class   ========  -->
+		<ActiveObjectClass>
+			<Id>1615457525986</Id>
+			<Name><![CDATA[Worker]]></Name>
+			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
+			<Generic>false</Generic>
+			<GenericParameter>
+				<Id>1615457525984</Id>
+				<Name><![CDATA[1615457525984]]></Name>
+				<GenericParameterValue Class="CodeValue">
+					<Code><![CDATA[T extends Agent]]></Code>
+				</GenericParameterValue>
+				<GenericParameterLabel><![CDATA[Generic parameter:]]></GenericParameterLabel>
+			</GenericParameter>
+			<FlowChartsUsage>RESOURCE_UNIT</FlowChartsUsage>
+			<SamplesToKeep>100</SamplesToKeep>
+			<LimitNumberOfArrayElements>false</LimitNumberOfArrayElements>
+			<ElementsLimitValue>100</ElementsLimitValue>
+			<MakeDefaultViewArea>true</MakeDefaultViewArea>
+			<SceneGridColor/>
+			<SceneBackgroundColor/>
+			<SceneSkybox>null</SceneSkybox>
+			<AgentProperties>
+	 			<SpaceType>CONTINUOUS</SpaceType>			
+				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
+				<RotateAnimationTowardsMovement>true</RotateAnimationTowardsMovement>
+				<RotateAnimationVertically>false</RotateAnimationVertically>
+				<VelocityCode Class="CodeUnitValue">
+					<Code><![CDATA[10]]></Code>
+					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+				</VelocityCode>
+				<PhysicalLength Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalLength>
+				<PhysicalWidth Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalWidth>
+				<PhysicalHeight Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalHeight>
+			</AgentProperties>
+			<EnvironmentProperties>
+					<EnableSteps>false</EnableSteps>
+					<StepDurationCode Class="CodeUnitValue">
+						<Code><![CDATA[1.0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</StepDurationCode>
+					<SpaceType>CONTINUOUS</SpaceType>
+					<WidthCode><![CDATA[500]]></WidthCode>
+					<HeightCode><![CDATA[500]]></HeightCode>
+					<ZHeightCode><![CDATA[0]]></ZHeightCode>
+					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+					<RowsCountCode><![CDATA[100]]></RowsCountCode>
+					<NeigborhoodType>MOORE</NeigborhoodType>
+					<LayoutType>USER_DEF</LayoutType>
+					<LayoutTypeApplyOnStartup>true</LayoutTypeApplyOnStartup>
+					<NetworkType>USER_DEF</NetworkType>
+					<NetworkTypeApplyOnStartup>true</NetworkTypeApplyOnStartup>
+					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+					<MCode><![CDATA[10]]></MCode>
+			</EnvironmentProperties>
+			<DatasetsCreationProperties>
+				<AutoCreate>true</AutoCreate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1615536000000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+			</DatasetsCreationProperties>
+			<ScaleRuler>
+				<Id>1615457525982</Id>
+				<Name><![CDATA[scale]]></Name>
+				<X>0</X><Y>-150</Y>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<Length>100</Length>
+				<Rotation>0</Rotation>
+				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ModelLength>10</ModelLength>
+				<LengthUnits>METER</LengthUnits>
+				<Scale>10</Scale>
+				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
+			</ScaleRuler>
+			<CurrentLevel>1615457525985</CurrentLevel>
+			<ConnectionsId>1615457525981</ConnectionsId>
+			<AgentLinks>
+				<AgentLink>
+					<Id>1615457525981</Id>
+					<Name><![CDATA[connections]]></Name>
+					<X>50</X><Y>-50</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<HandleReceiveInConnections>false</HandleReceiveInConnections>
+					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
+					<AgentLinkBidirectional>true</AgentLinkBidirectional>
+					<MessageType><![CDATA[Object]]></MessageType>
+					<LineStyle>SOLID</LineStyle>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineZOrder>UNDER_AGENTS</LineZOrder>
+					<LineArrow>NONE</LineArrow>
+					<LineArrowPosition>END</LineArrowPosition>
+				</AgentLink>
+			</AgentLinks>
+
+
+			<Presentation>
+				<Level>
+					<Id>1615457525985</Id>
+					<Name><![CDATA[level]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<Z>0</Z>
+					<LevelVisibility>DIM_NON_CURRENT</LevelVisibility>
+
+
+				</Level>
+			</Presentation>
+
+		</ActiveObjectClass>
 	</ActiveObjectClasses>	
 	<DifferentialEquationsMethod>EULER</DifferentialEquationsMethod>
 	<MixedEquationsMethod>RK45_NEWTON</MixedEquationsMethod>
@@ -15580,7 +15718,7 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 
 			<AllowParallelEvaluations>true</AllowParallelEvaluations>
 			<UseFreeformParameters>true</UseFreeformParameters>
-			<NumberOfRuns>10000</NumberOfRuns>
+			<NumberOfRuns>100</NumberOfRuns>
 			<FreeformParamValue>	
 				<Id>1614173363216</Id>
 			</FreeformParamValue>
@@ -15647,6 +15785,23 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 				<ExpressionForConfidenceComputation><![CDATA[0]]></ExpressionForConfidenceComputation>
 			</ReplicationsProperties>
 		</ParamVariationExperiment>	
+		<!--   =========  Reinforcemenet Learning Experiment   ========  -->
+		<ReinforcementLearningExperiment ActiveObjectClassId="1614172472034">
+			<Id>0</Id>
+			<Name><![CDATA[ReinforcementLearning]]></Name>
+			<MaximumMemory>512</MaximumMemory>
+			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+			<SeedValue>1</SeedValue>
+			<ModelTimeProperties>
+				<StopOption><![CDATA[Stop at specified date]]></StopOption>
+				<InitialDate><![CDATA[1614153600000]]></InitialDate>	
+				<InitialTime><![CDATA[0.0]]></InitialTime>	
+				<FinalDate><![CDATA[1614182400000]]></FinalDate>	
+				<FinalTime><![CDATA[28800.0]]></FinalTime>	
+			</ModelTimeProperties>
+			<StopCondition><![CDATA[false]]></StopCondition>
+		</ReinforcementLearningExperiment>
 	</Experiments>
 	<ModelResources>
 		<Resource>
@@ -15675,12 +15830,6 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 		<VersionMajor>8</VersionMajor>
 		<VersionMinor>0</VersionMinor>
 		<VersionBuild>5</VersionBuild>
-    </RequiredLibraryReference>
-    <RequiredLibraryReference>
-		<LibraryName><![CDATA[pathmind_agv_tutorial]]></LibraryName>
-		<VersionMajor>0</VersionMajor>
-		<VersionMinor>0</VersionMinor>
-		<VersionBuild>0</VersionBuild>
     </RequiredLibraryReference>
     <RequiredLibraryReference>
 		<LibraryName><![CDATA[pathmind.policyhelper]]></LibraryName>
