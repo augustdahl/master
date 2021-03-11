@@ -366,7 +366,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[true]]></Code>
+							<Code><![CDATA[false]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1615447310969</Id>
@@ -9911,43 +9911,6 @@ source.inject(1);]]></Code>
 			<Functions>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[Workstation]]></ReturnType>
-					<Id>1614935303707</Id>
-					<Name><![CDATA[nextDestination]]></Name>
-					<X>50</X><Y>140</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[product]]></Name>
-						<Type><![CDATA[Product]]></Type>
-					</Parameter>
-					<Body><![CDATA[switch(product.productType) {
-	case 0:
-		if (product.stagesComplete == 1) {
-			return main.workstations.get(2);
-		} else if (product.stagesComplete == 2) {
-			return main.workstations.get(4);
-		}
-	case 1:
-		if (product.stagesComplete == 1) {
-			return main.workstations.get(3);
-		} else if (product.stagesComplete == 2) {
-			return main.workstations.get(5);
-		}
-	case 2:
-		if (product.stagesComplete == 1) {
-			return main.workstations.get(4);
-		} else if (product.stagesComplete == 2) {
-			return main.workstations.get(6);
-		}
-	default:
-		return null;
-}]]></Body>
-				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1614939266789</Id>
 					<Name><![CDATA[hasSpaceOnConveyor]]></Name>
@@ -12045,7 +12008,7 @@ feedSupplySize--;]]></Code>
 						<Parameter>
 							<Name><![CDATA[onExit]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[Workstation w = nextDestination(agent);
+								<Code><![CDATA[Workstation w = main.workstations.get(agent.assignedForklift.deliveryMachine);
 w.enter.take(agent);]]></Code>
 							</Value>
 						</Parameter>
