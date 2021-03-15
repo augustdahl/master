@@ -366,7 +366,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[true]]></Code>
+							<Code><![CDATA[false]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1615447310969</Id>
@@ -532,7 +532,7 @@ if (isPathmindEnabled) {
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1614596174000</Id>
 					<Name><![CDATA[heuristicAction]]></Name>
-					<X>-240</X><Y>370</Y>
+					<X>-290</X><Y>680</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -541,60 +541,21 @@ if (isPathmindEnabled) {
 						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
-					<Body><![CDATA[// Raw material status of WS 3
-/*Workstation ws_3 = workstations.get(2);
-String s = "WS 3 Prod \nExpProd: " + ws_3.numExpectedProd + "\nfeedProd: " + ws_3.feedProdSize +
-	"\nWS 3 Supply \nExpSupply: " + ws_3.numExpectedSupply + "\nfeedSupply: " + ws_3.feedSupplySize + "\n";
-System.out.println(s);*/
-
-//check if any process needs raw material
-List<Workstation> list_needRaw = sortDescending(filter(workstations, y -> y.totalProd_inStorageAndExpected() > y.totalSupply_inStorageAndExpected()), x->x.totalProd_inStorageAndExpected() - x.totalSupply_inStorageAndExpected());
-if(list_needRaw.size() > 0){
-	Workstation dest = list_needRaw.get(0); //find machine most in need for raw material
-	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply()) {
-		//System.out.println("Sending SUPPLY to workstation " + dest.machineNumber);
-		//System.out.println("Number of supply on line: " + dest.totalSupply_inStorageAndExpected());
-		sendTo_supermarket(3, dest.machineNumber, agentId);
-		return;
-	}
-}
-
-			
-//check if there is pick up to be done on process lines
-for(Workstation w : workstations){
-	boolean sentTo = false;
-	int origin = w.getIndex();
-	if (w.isFinishPickupPossible()) {
-		if (w.productReadyForEnd != null) { // checking pickup to productReadyForEnd
-			sendTo_finish(origin, agentId);
-			sentTo = true;
-		}
-	}
-	if(w.isProcessPickupPossible()) { //if there is a pickup possible
-		List<Workstation> list = sortAscending(filter(workstations, x->x.machineNumber == w.machineNumber + 2), y->y.feedProdSize);
-		Workstation dest = list.get(0); //find shortest queue machine for destination
-		if(dest.hasSpaceOnConveyor()){
-			//String s = "Sending forklift " + agentId + " to workstation " + origin + " delivery to " + dest.machineNumber;
-			//System.out.println(s);
-			sendTo_workstation(origin, dest.machineNumber, agentId);
-			sentTo = true;
-		}
-	}
-	if (sentTo) {
-		return;
-	}
-}
-
-//find first stage machines with shortest queue
-List<Workstation> list_firstStage = sortAscending(filter(workstations, w -> w.processStage == 0), x-> (x.feedSupplySize + x.feedProdSize + x.numExpectedProd + x.numExpectedSupply));
-Workstation dest_firstStage = list_firstStage.get(0);//find shortest queue
-int origin = uniform_discr(0, 2);
-if( supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor()){
-	//System.out.println("Sending PRODUCT to workstation " + dest_firstStage.machineNumber);
-	//System.out.println("Number of products on line: " + dest_firstStage.totalProd_inStorageAndExpected());
-	sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId);
+					<Body><![CDATA[if (heuristicWsSupply(agentId)) { // Supplies WS with biggest feedProd queue size
 	return;
-}]]></Body>
+}
+
+if (heuristicWsPickup(agentId)) { // Finds WS with the longest finished product waiting time
+	return;
+}
+
+if (heuristicProductToWs(agentId)) { // Assigns forklift to a random product in supermarket
+	return;
+}
+
+
+
+]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -622,12 +583,12 @@ if( supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnCon
 
 Supermarket sl_origin = supermarkets.get(origin);
 boolean isSupply = !sl_origin.isProduct;
-//System.out.println("sendTo_supermarket");
+//System.out.println("[sendTo_supermarket] origin: " + origin + " dest: " + dest_machine);
 
 //if not supply, it has to be delivered to ws 0, 1, or 2
 if(!isSupply){
 	if (!(dest_machine == 0 || dest_machine == 1 || dest_machine == 2)){	// neq 1,2,3
-		//System.out.println("Invalid action!");
+		// System.out.println("Invalid action! Destination was " + dest_machine + " for product " + (origin+1));
 		currentForklift.invalidAction++;
 		return;
 	}
@@ -647,7 +608,7 @@ Workstation destination = workstations.get(dest_machine);
 
 if( (isSupply && destination.hasSpaceForSupply())
 	|| (!isSupply && destination.hasSpaceOnConveyor()) ){
-		
+
 	//update expected nembers for destination
 	if(isSupply)
 		destination.numExpectedSupply++;
@@ -925,6 +886,110 @@ else if(origin < 11) {
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
 					<Body><![CDATA[return (currentForklift != forklifts.get(agentId));]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1615748933962</Id>
+					<Name><![CDATA[heuristicWsSupply]]></Name>
+					<X>-280</X><Y>700</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[agentId]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[// Sort by biggest feedProd queue size at WS
+List<Workstation> list_needSupply = sortDescending(filter(workstations, y -> y.totalProd_inStorageAndExpected() > y.totalSupply_inStorageAndExpected()), 
+	x->x.totalProd_inStorageAndExpected() - x.totalSupply_inStorageAndExpected());
+
+if(list_needSupply.size() > 0){
+	Workstation dest = list_needSupply.get(0); //find machine most in need for raw material
+	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply()) {
+		//System.out.println("Sending SUPPLY to workstation " + dest.machineNumber);
+		//System.out.println("Number of supply on line: " + dest.totalSupply_inStorageAndExpected());
+		sendTo_supermarket(3, dest.machineNumber, agentId);
+		return true;
+	}
+}
+return false;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1615748968301</Id>
+					<Name><![CDATA[heuristicWsPickup]]></Name>
+					<X>-280</X><Y>720</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[agentId]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[// Sort workstations according to distance compared to the current forklift position?
+// Introduce a task priority?
+Forklift flift = forklifts.get(agentId);
+Position pos = flift.getPosition();
+
+System.out.println("Frklft: " + flift + "  posX: " + pos.x + " postY: " + pos.y);
+
+// Sort according to product pickup wait time
+List<Workstation> sortedWS = sortDescending(workstations, w -> w.getLongestTime());
+
+//check if there is pick up to be done on process lines
+for(Workstation w : sortedWS){
+	if (w.getLongestTime() != Double.NEGATIVE_INFINITY) {
+		int origin = w.getIndex();
+		if (w.isFinishPickupPossible()) {
+			// if (w.productReadyForEnd) { // REMOVED
+			sendTo_finish(origin, agentId);
+			return true;
+		}
+		if(w.isProcessPickupPossible()) { //if there is a pickup possible
+			Workstation dest = workstations.get(w.machineNumber + 2);
+			if(dest.hasSpaceOnConveyor()){
+				//String s = "Sending forklift " + agentId + " to workstation " + origin + " delivery to " + dest.machineNumber;
+				//System.out.println(s);
+				sendTo_workstation(origin, dest.machineNumber, agentId);
+				return true;
+			}
+		}
+	}
+	
+}
+return false;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1615748973074</Id>
+					<Name><![CDATA[heuristicProductToWs]]></Name>
+					<X>-280</X><Y>740</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[agentId]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[// Initializing product from supermarket to first WS
+List<Workstation> list_firstStage = Arrays.asList(workstations.get(0), workstations.get(1), workstations.get(2));
+int choice = uniform_discr(0, 2);
+Workstation dest_firstStage = list_firstStage.get(choice); // Randomly drawn product is chosen
+
+int origin = dest_firstStage.machineNumber;
+if(supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor()){
+	//System.out.println("Sending PRODUCT " + (origin+1) +  " to workstation " + (dest_firstStage.machineNumber+1));
+	//System.out.println("Number of products on line: " + dest_firstStage.totalProd_inStorageAndExpected());
+	sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId);
+	return true;
+}
+return false;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -8826,6 +8891,18 @@ source.inject(1);]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1615811587426</Id>
+					<Name><![CDATA[waitForPickup]]></Name>
+					<X>70</X><Y>160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1614246805429</Id>
 					<Name><![CDATA[productType]]></Name>
@@ -9176,6 +9253,21 @@ source.inject(1);]]></Code>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1615811514611</Id>
+					<Name><![CDATA[productsForPickup]]></Name>
+					<X>230</X><Y>220</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
+						<ElementClass><![CDATA[Product]]></ElementClass>
+						<ValueElementClass><![CDATA[String]]></ValueElementClass>
+					</Properties>
+
 				</Variable>
 			</Variables>
 			<Connectors>
@@ -9611,42 +9703,9 @@ source.inject(1);]]></Code>
 					</Points>
 				</Connector>
 				<Connector>
-					<Id>1614585773011</Id>
-					<Name><![CDATA[connector6]]></Name>
-					<X>1110</X><Y>130</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[masterthesis]]></PackageName>
-						<ClassName><![CDATA[Workstation]]></ClassName>
-						<ItemName><![CDATA[checkFinished]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[SelectOutput]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[masterthesis]]></PackageName>
-						<ClassName><![CDATA[Workstation]]></ClassName>
-						<ItemName><![CDATA[convey_finish]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
-						<ClassName><![CDATA[Convey]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>-50</X><Y>0</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
 					<Id>1614585773014</Id>
 					<Name><![CDATA[connector7]]></Name>
-					<X>1020</X><Y>130</Y>
+					<X>1000</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -9673,7 +9732,7 @@ source.inject(1);]]></Code>
 					</TargetConnectableItemReference>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>-60</X><Y>0</Y></Point>
+						<Point><X>-40</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -9907,6 +9966,39 @@ source.inject(1);]]></Code>
 						<Point><X>50</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
+				<Connector>
+					<Id>1615812715738</Id>
+					<Name><![CDATA[connector21]]></Name>
+					<X>1110</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[checkFinished]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[SelectOutput]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[convey_finish]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
+						<ClassName><![CDATA[Convey]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-70</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
 			</Connectors>
 			<Functions>
 				<Function AccessType="default" StaticFunction="false">
@@ -9967,7 +10059,8 @@ source.inject(1);]]></Code>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return wait.size() > 0 //there are products available for pickup 
+					<Body><![CDATA[// Introduce a high priority heuristic here?
+return wait.size() > 0 //there are products available for pickup 
 		&& ((Product)(wait.get(0))).assignedForklift == null; //it's not already assigned to another ]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
@@ -10013,8 +10106,46 @@ source.inject(1);]]></Code>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return waitFinish.size() > 0 //there are products available for pickup 
+					<Body><![CDATA[// Introduce a high priority heuristic here?
+return waitFinish.size() > 0 //there are products available for pickup 
 		&& ((Product)(waitFinish.get(0))).assignedForklift == null; //it's not already assigned to another ]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1615751687761</Id>
+					<Name><![CDATA[distanceFromWS]]></Name>
+					<X>50</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[pos]]></Name>
+						<Type><![CDATA[Position]]></Type>
+					</Parameter>
+					<Body><![CDATA[Workstation ws = main.workstations.get(getIndex());
+Position ws_pos = ws.getPosition();
+System.out.println("Position of WS " + getIndex() + " postion: " + ws_pos);
+return 0;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1615813164036</Id>
+					<Name><![CDATA[getLongestTime]]></Name>
+					<X>230</X><Y>240</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[double tempLowest = Double.POSITIVE_INFINITY;
+for (Product p : productsForPickup) {
+	if (p.waitForPickup < tempLowest) {
+		tempLowest = p.waitForPickup;
+	}
+}
+return time() - tempLowest;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -11932,6 +12063,10 @@ feedSupplySize--;]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onSeizeTransporter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[agent.waitForPickup = 0;
+productsForPickup.remove(agent);]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onRemove]]></Name>
@@ -12443,6 +12578,9 @@ w.enter.take(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExitTrue]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[productReadyForEnd = null]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExitFalse]]></Name>
@@ -12493,7 +12631,7 @@ w.enter.take(agent);]]></Code>
 				<EmbeddedObject>
 					<Id>1614585772967</Id>
 					<Name><![CDATA[convey_finish]]></Name>
-					<X>1020</X><Y>120</Y>
+					<X>1000</X><Y>120</Y>
 					<Label><X>-20</X><Y>-25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -12560,6 +12698,9 @@ w.enter.take(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[routeIs]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.ROUTE_LIST_OF_CONVEYORS]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[conveyorsToAvoid]]></Name>
@@ -12578,6 +12719,10 @@ w.enter.take(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onEnter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[agent.waitForPickup = time();
+productsForPickup.add(agent);]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onAtExit]]></Name>
@@ -13212,6 +13357,10 @@ w.enter.take(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onSeizeTransporter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[agent.waitForPickup = 0;
+productsForPickup.remove(agent);]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onRemove]]></Name>
@@ -15835,6 +15984,12 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 		<LibraryName><![CDATA[pathmind.policyhelper]]></LibraryName>
 		<VersionMajor>1</VersionMajor>
 		<VersionMinor>4</VersionMinor>
+		<VersionBuild>0</VersionBuild>
+    </RequiredLibraryReference>
+    <RequiredLibraryReference>
+		<LibraryName><![CDATA[pathmind_agv_tutorial]]></LibraryName>
+		<VersionMajor>0</VersionMajor>
+		<VersionMinor>0</VersionMinor>
 		<VersionBuild>0</VersionBuild>
     </RequiredLibraryReference>
 </Model>
