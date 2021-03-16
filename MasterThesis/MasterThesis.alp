@@ -244,7 +244,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[3]]></Code>
+							<Code><![CDATA[5]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1614173363214</Id>
@@ -380,7 +380,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 				<Variable Class="Parameter">
 					<Id>1615824735794</Id>
 					<Name><![CDATA[isConventionalEnabled]]></Name>
-					<X>-170</X><Y>770</Y>
+					<X>-230</X><Y>770</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -390,7 +390,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[false]]></Code>
+							<Code><![CDATA[true]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1615824735792</Id>
@@ -1052,7 +1052,7 @@ return false;]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1615824764430</Id>
 					<Name><![CDATA[conventionalAction]]></Name>
-					<X>-170</X><Y>810</Y>
+					<X>-230</X><Y>810</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1065,15 +1065,94 @@ return false;]]></Body>
 
 switch(fleetName) {
 	case "WS_3_4":
-		
+		List<Workstation> ws_3_4 = sortDescending(Arrays.asList(workstations.get(2), workstations.get(3)), w -> w.getLongestTime());
+		conventionalWsPickup(ws_3_4, forklift);
 		break;
 	case "WS_2_7":
+		List<Workstation> ws_2_7 = sortDescending(Arrays.asList(workstations.get(1), workstations.get(6)), w -> w.getLongestTime());
+		conventionalWsPickup(ws_2_7, forklift);
 		break;
 	case "WS_5_6_1":
+		List<Workstation> ws_5_6_1 = sortDescending(Arrays.asList(workstations.get(0), workstations.get(4), workstations.get(5)), w -> w.getLongestTime());
+		conventionalWsPickup(ws_5_6_1, forklift);
 		break;
 	case "supermarket":
+		conventionalSupermarketPickup(forklift);
 		break;
+}
+]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1615887040615</Id>
+					<Name><![CDATA[conventionalWsPickup]]></Name>
+					<X>-210</X><Y>830</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[ws_list]]></Name>
+						<Type><![CDATA[List<Workstation>]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[forklift]]></Name>
+						<Type><![CDATA[Forklift]]></Type>
+					</Parameter>
+					<Body><![CDATA[//check if there is pick up to be done on process lines
+for(Workstation w : ws_list){
+	if (w.getLongestTime() != Double.NEGATIVE_INFINITY) {
+		int origin = w.getIndex();
+		if (w.isFinishPickupPossible()) {
+			sendTo_finish(origin, -1, forklift);
+		}
+		if(w.isProcessPickupPossible()) { //if there is a pickup possible
+			Workstation dest = workstations.get(w.machineNumber + 2);
+			if(dest.hasSpaceOnConveyor()){
+				sendTo_workstation(origin, dest.machineNumber, -1, forklift);
+			}
+		}
+	}
+	
 }]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1615887514341</Id>
+					<Name><![CDATA[conventionalSupermarketPickup]]></Name>
+					<X>-210</X><Y>850</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[forklift]]></Name>
+						<Type><![CDATA[Forklift]]></Type>
+					</Parameter>
+					<Body><![CDATA[// Sort by biggest feedProd queue size at WS
+List<Workstation> list_needSupply = sortDescending(filter(workstations, y -> y.totalProd_inStorageAndExpected() > y.totalSupply_inStorageAndExpected()), 
+	x->x.totalProd_inStorageAndExpected() - x.totalSupply_inStorageAndExpected());
+
+if(list_needSupply.size() > 0){
+	Workstation dest = list_needSupply.get(0); //find machine most in need for raw material
+	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply()) {
+		sendTo_supermarket(3, dest.machineNumber, -1, forklift);
+		return;
+	}
+}
+// Initializing product from supermarket to first WS
+List<Workstation> list_firstStage = Arrays.asList(workstations.get(0), workstations.get(1), workstations.get(2));
+int choice = uniform_discr(0, 2);
+Workstation dest_firstStage = list_firstStage.get(choice); // Randomly drawn product is chosen
+
+int origin = dest_firstStage.machineNumber;
+if(supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor()){
+	sendTo_supermarket(origin, dest_firstStage.machineNumber, -1, forklift);
+	return;
+}
+]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -1766,74 +1845,9 @@ unit.delay.stopDelayForAll();]]></Code>
 					</QuantityColumn>
 				</EmbeddedObject>
 				<EmbeddedObject>
-					<Id>1615824276662</Id>
-					<Name><![CDATA[forklifts_conventional]]></Name>
-					<X>-170</X><Y>720</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<ActiveObjectClass>
-						<PackageName><![CDATA[masterthesis]]></PackageName>
-						<ClassName><![CDATA[Forklift]]></ClassName>
-					</ActiveObjectClass>
-					<GenericParameterSubstitute>
-						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[masterthesis]]></PackageName>
-							<ClassName><![CDATA[Forklift]]></ClassName>
-							<ItemName><![CDATA[1614173193470]]></ItemName>
-						</GenericParameterSubstituteReference>
-					</GenericParameterSubstitute>
-					<Parameters>
-					</Parameters>
-					<ReplicationFlag>true</ReplicationFlag>
-					<Replication Class="CodeValue">
-						<Code><![CDATA[100]]></Code>
-					</Replication>
-					<CollectionType>ARRAY_LIST_BASED</CollectionType>
-					<InEnvironment>true</InEnvironment>	
-					<InitialSpeedCode Class="CodeUnitValue">
-						<Code><![CDATA[20]]></Code>
-						<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
-					</InitialSpeedCode>
-					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
-					<XCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</XCode>
-					<YCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</YCode>
-					<ZCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ZCode>
-					<ColumnCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</ColumnCode>
-					<RowCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</RowCode>
-					<LatitudeCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</LatitudeCode>
-					<LongitudeCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
-					</LongitudeCode>
-					<LocationNameCode Class="CodeValue">
-						<Code><![CDATA[""]]></Code>
-					</LocationNameCode>
-					<InitializationType>EMPTY</InitializationType>
-					<InitializationDatabaseTableQuery>
-						<TableReference>
-						</TableReference>
-					</InitializationDatabaseTableQuery>
-					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
-					<QuantityColumn>
-					</QuantityColumn>
-				</EmbeddedObject>
-				<EmbeddedObject>
 					<Id>1615824296496</Id>
 					<Name><![CDATA[supermarketFleet]]></Name>
-					<X>-180</X><Y>560</Y>
+					<X>-240</X><Y>560</Y>
 					<Label><X>45</X><Y>5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2094,7 +2108,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObject>
 					<Id>1615824538597</Id>
 					<Name><![CDATA[WS_3_4_fleet]]></Name>
-					<X>-180</X><Y>600</Y>
+					<X>-240</X><Y>600</Y>
 					<Label><X>45</X><Y>5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2355,7 +2369,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObject>
 					<Id>1615824584736</Id>
 					<Name><![CDATA[WS_2_7_fleet]]></Name>
-					<X>-180</X><Y>640</Y>
+					<X>-240</X><Y>640</Y>
 					<Label><X>45</X><Y>5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2616,7 +2630,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObject>
 					<Id>1615824647351</Id>
 					<Name><![CDATA[WS_5_6_1_fleet]]></Name>
-					<X>-180</X><Y>680</Y>
+					<X>-240</X><Y>680</Y>
 					<Label><X>45</X><Y>5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2866,6 +2880,72 @@ unit.delay.stopDelayForAll();]]></Code>
 						<Code><![CDATA[""]]></Code>
 					</LocationNameCode>
 					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>0</Id>
+					<Name><![CDATA[forklifts_conventional]]></Name>
+					<X>-230</X><Y>740</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<PresentationId>1615889285191</PresentationId>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Forklift]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[masterthesis]]></PackageName>
+							<ClassName><![CDATA[Forklift]]></ClassName>
+							<ItemName><![CDATA[1614173193470]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+					</Parameters>
+					<ReplicationFlag>true</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InEnvironment>true</InEnvironment>	
+					<InitialSpeedCode Class="CodeUnitValue">
+						<Code><![CDATA[20]]></Code>
+						<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+					</InitialSpeedCode>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>EMPTY</InitializationType>
 					<InitializationDatabaseTableQuery>
 						<TableReference>
 						</TableReference>
@@ -6757,7 +6837,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<Text>
 					<Id>1615824710773</Id>
 					<Name><![CDATA[text14]]></Name>
-					<X>-180</X><Y>500</Y>
+					<X>-240</X><Y>500</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6881,6 +6961,25 @@ unit.delay.stopDelayForAll();]]></Code>
 					<Id>1614592305107</Id>
 					<Name><![CDATA[workstations_presentation]]></Name>
 					<X>455</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<DrawingMode>AGENT_CURRENT_POSITION</DrawingMode>
+					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
+					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
+					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
+					<Latitude>0.0</Latitude>
+					<Longitude>0.0</Longitude>
+				</EmbeddedObjectPresentation>
+				<EmbeddedObjectPresentation>
+					<Id>1615889285191</Id>
+					<Name><![CDATA[forklifts_conventional_presentation]]></Name>
+					<X>-130</X><Y>740</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -13818,7 +13917,8 @@ productsForPickup.remove(agent);]]></Code>
 						<Parameter>
 							<Name><![CDATA[onExit]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[Workstation w = main.workstations.get(agent.assignedForklift.deliveryMachine);
+								<Code><![CDATA[System.out.println("Workstation " + agent.assignedForklift.deliveryMachine + ", \n stagesComplete: " + agent.stagesComplete + ", \n productType: " + agent.productType + ", \n machineNumber: " + machineNumber);
+Workstation w = main.workstations.get(agent.assignedForklift.deliveryMachine);
 w.enter.take(agent);]]></Code>
 							</Value>
 						</Parameter>
