@@ -177,7 +177,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1614596127526</Id>
 					<Name><![CDATA[currentForklift]]></Name>
-					<X>-220</X><Y>320</Y>
+					<X>-230</X><Y>230</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -356,7 +356,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 				<Variable Class="Parameter">
 					<Id>1615447310971</Id>
 					<Name><![CDATA[isPathmindEnabled]]></Name>
-					<X>-230</X><Y>600</Y>
+					<X>-450</X><Y>590</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -370,6 +370,30 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1615447310969</Id>
+							<EditorContolType>CHECK_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1615824735794</Id>
+					<Name><![CDATA[isConventionalEnabled]]></Name>
+					<X>-170</X><Y>770</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[boolean]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[false]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1615824735792</Id>
 							<EditorContolType>CHECK_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
@@ -510,7 +534,7 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1614596058308</Id>
 					<Name><![CDATA[queryAnAction]]></Name>
-					<X>-240</X><Y>290</Y>
+					<X>-250</X><Y>200</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -523,6 +547,8 @@ workstations.get(6).setRotation(PI/2);]]></StartupCode>
 
 if (isPathmindEnabled) {
 	pathmindHelper.triggerNextAction();
+} else if (isConventionalEnabled) {
+	conventionalAction(forklift);
 } else {
 	heuristicAction(forklift.getIndex());
 }]]></Body>
@@ -532,7 +558,7 @@ if (isPathmindEnabled) {
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1614596174000</Id>
 					<Name><![CDATA[heuristicAction]]></Name>
-					<X>-290</X><Y>680</Y>
+					<X>-680</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -562,7 +588,7 @@ if (heuristicProductToWs(agentId)) { // Assigns forklift to a random product in 
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1614596671821</Id>
 					<Name><![CDATA[sendTo_supermarket]]></Name>
-					<X>-220</X><Y>400</Y>
+					<X>-230</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -579,7 +605,17 @@ if (heuristicProductToWs(agentId)) { // Assigns forklift to a random product in 
 						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
-					<Body><![CDATA[Forklift currentForklift = forklifts.get(agentId);
+					<Parameter>
+						<Name><![CDATA[forklift]]></Name>
+						<Type><![CDATA[Forklift]]></Type>
+					</Parameter>
+					<Body><![CDATA[Forklift currentForklift = null;
+if (isConventionalEnabled) {
+	currentForklift = forklift;
+} else {
+	currentForklift = forklifts.get(agentId);
+}
+
 
 Supermarket sl_origin = supermarkets.get(origin);
 boolean isSupply = !sl_origin.isProduct;
@@ -631,7 +667,7 @@ if( (isSupply && destination.hasSpaceForSupply())
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1614943831537</Id>
 					<Name><![CDATA[sendTo_workstation]]></Name>
-					<X>-220</X><Y>430</Y>
+					<X>-230</X><Y>340</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -648,7 +684,17 @@ if( (isSupply && destination.hasSpaceForSupply())
 						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
-					<Body><![CDATA[Forklift currentForklift = forklifts.get(agentId);
+					<Parameter>
+						<Name><![CDATA[forklift]]></Name>
+						<Type><![CDATA[Forklift]]></Type>
+					</Parameter>
+					<Body><![CDATA[Forklift currentForklift = null;
+if (isConventionalEnabled) {
+	currentForklift = forklift;
+} else {
+	currentForklift = forklifts.get(agentId);
+}
+
 Workstation w_origin = workstations.get(origin);
 
 //it has to be delivered to next stage
@@ -698,7 +744,7 @@ if(destination.hasSpaceOnConveyor()){	//is there space in destination
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1615291136463</Id>
 					<Name><![CDATA[sendTo_finish]]></Name>
-					<X>-220</X><Y>460</Y>
+					<X>-230</X><Y>370</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -711,7 +757,17 @@ if(destination.hasSpaceOnConveyor()){	//is there space in destination
 						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
-					<Body><![CDATA[Forklift currentForklift = forklifts.get(agentId);
+					<Parameter>
+						<Name><![CDATA[forklift]]></Name>
+						<Type><![CDATA[Forklift]]></Type>
+					</Parameter>
+					<Body><![CDATA[Forklift currentForklift = null;
+if (isConventionalEnabled) {
+	currentForklift = forklift;
+} else {
+	currentForklift = forklifts.get(agentId);
+}
+
 Workstation w_origin = workstations.get(origin);
 
 
@@ -737,7 +793,7 @@ waitBlock.freeAll();]]></Body>
 					<ReturnType><![CDATA[double []]]></ReturnType>
 					<Id>1615445654000</Id>
 					<Name><![CDATA[getObs_Forklift]]></Name>
-					<X>-480</X><Y>570</Y>
+					<X>-450</X><Y>660</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -767,7 +823,7 @@ return obs;]]></Body>
 					<ReturnType><![CDATA[double []]]></ReturnType>
 					<Id>1615445654006</Id>
 					<Name><![CDATA[getObs_workstation_inventory]]></Name>
-					<X>-480</X><Y>610</Y>
+					<X>-450</X><Y>700</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -792,7 +848,7 @@ return obs;]]></Body>
 					<ReturnType><![CDATA[double[]]]></ReturnType>
 					<Id>1615445654011</Id>
 					<Name><![CDATA[getObs_Forklift_selfOnly]]></Name>
-					<X>-480</X><Y>590</Y>
+					<X>-450</X><Y>680</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -818,7 +874,7 @@ return obs;]]></Body>
 					<ReturnType><![CDATA[double []]]></ReturnType>
 					<Id>1615445654015</Id>
 					<Name><![CDATA[getObs_supermarket]]></Name>
-					<X>-480</X><Y>630</Y>
+					<X>-450</X><Y>720</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -837,7 +893,7 @@ return obs;]]></Body>
 					<ReturnType><![CDATA[SelectOutputOut]]></ReturnType>
 					<Id>1615446184444</Id>
 					<Name><![CDATA[doAction]]></Name>
-					<X>-480</X><Y>670</Y>
+					<X>-450</X><Y>760</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -857,7 +913,7 @@ return obs;]]></Body>
 					<Body><![CDATA[
 if(origin < 4) { 
 	//origin is one of 4 supermarkets
-	sendTo_supermarket(origin, dest_machine, agentId);
+	sendTo_supermarket(origin, dest_machine, agentId, null);
 }
 
 else if(origin < 11) {
@@ -865,9 +921,9 @@ else if(origin < 11) {
 	int new_origin = origin-4;
 	Workstation w = workstations.get(new_origin);
 	if (w.isFinishPickupPossible() && w.productReadyForEnd != null) {
-		sendTo_finish(new_origin, agentId);
+		sendTo_finish(new_origin, agentId, null);
 	} else {
-		sendTo_workstation(new_origin, dest_machine, agentId); 
+		sendTo_workstation(new_origin, dest_machine, agentId, null); 
 	}
 }]]></Body>
 				</Function>
@@ -876,7 +932,7 @@ else if(origin < 11) {
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1615449855814</Id>
 					<Name><![CDATA[isSkip]]></Name>
-					<X>-230</X><Y>630</Y>
+					<X>-450</X><Y>620</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -892,7 +948,7 @@ else if(origin < 11) {
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1615748933962</Id>
 					<Name><![CDATA[heuristicWsSupply]]></Name>
-					<X>-280</X><Y>700</Y>
+					<X>-670</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -910,7 +966,7 @@ if(list_needSupply.size() > 0){
 	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply()) {
 		//System.out.println("Sending SUPPLY to workstation " + dest.machineNumber);
 		//System.out.println("Number of supply on line: " + dest.totalSupply_inStorageAndExpected());
-		sendTo_supermarket(3, dest.machineNumber, agentId);
+		sendTo_supermarket(3, dest.machineNumber, agentId, null);
 		return true;
 	}
 }
@@ -921,7 +977,7 @@ return false;]]></Body>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1615748968301</Id>
 					<Name><![CDATA[heuristicWsPickup]]></Name>
-					<X>-280</X><Y>720</Y>
+					<X>-670</X><Y>600</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -932,10 +988,10 @@ return false;]]></Body>
 					</Parameter>
 					<Body><![CDATA[// Sort workstations according to distance compared to the current forklift position?
 // Introduce a task priority?
-Forklift flift = forklifts.get(agentId);
-Position pos = flift.getPosition();
+//Forklift flift = forklifts.get(agentId);
+//Position pos = flift.getPosition();
 
-System.out.println("Frklft: " + flift + "  posX: " + pos.x + " postY: " + pos.y);
+//System.out.println("Frklft: " + flift + "  posX: " + pos.x + " postY: " + pos.y);
 
 // Sort according to product pickup wait time
 List<Workstation> sortedWS = sortDescending(workstations, w -> w.getLongestTime());
@@ -946,7 +1002,7 @@ for(Workstation w : sortedWS){
 		int origin = w.getIndex();
 		if (w.isFinishPickupPossible()) {
 			// if (w.productReadyForEnd) { // REMOVED
-			sendTo_finish(origin, agentId);
+			sendTo_finish(origin, agentId, null);
 			return true;
 		}
 		if(w.isProcessPickupPossible()) { //if there is a pickup possible
@@ -954,7 +1010,7 @@ for(Workstation w : sortedWS){
 			if(dest.hasSpaceOnConveyor()){
 				//String s = "Sending forklift " + agentId + " to workstation " + origin + " delivery to " + dest.machineNumber;
 				//System.out.println(s);
-				sendTo_workstation(origin, dest.machineNumber, agentId);
+				sendTo_workstation(origin, dest.machineNumber, agentId, null);
 				return true;
 			}
 		}
@@ -968,7 +1024,7 @@ return false;]]></Body>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1615748973074</Id>
 					<Name><![CDATA[heuristicProductToWs]]></Name>
-					<X>-280</X><Y>740</Y>
+					<X>-670</X><Y>620</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -986,10 +1042,38 @@ int origin = dest_firstStage.machineNumber;
 if(supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor()){
 	//System.out.println("Sending PRODUCT " + (origin+1) +  " to workstation " + (dest_firstStage.machineNumber+1));
 	//System.out.println("Number of products on line: " + dest_firstStage.totalProd_inStorageAndExpected());
-	sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId);
+	sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId, null);
 	return true;
 }
 return false;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1615824764430</Id>
+					<Name><![CDATA[conventionalAction]]></Name>
+					<X>-170</X><Y>810</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[forklift]]></Name>
+						<Type><![CDATA[Forklift]]></Type>
+					</Parameter>
+					<Body><![CDATA[String fleetName = forklift.fleetName;
+
+switch(fleetName) {
+	case "WS_3_4":
+		
+		break;
+	case "WS_2_7":
+		break;
+	case "WS_5_6_1":
+		break;
+	case "supermarket":
+		break;
+}]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -1119,7 +1203,7 @@ return false;]]></Body>
 						<Parameter>
 							<Name><![CDATA[capacity]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[numberOfForklifts]]></Code>
+								<Code><![CDATA[isConventionalEnabled ? 0 : numberOfForklifts]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -1538,7 +1622,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObject>
 					<Id>1615445426648</Id>
 					<Name><![CDATA[pathmindHelper]]></Name>
-					<X>-240</X><Y>550</Y>
+					<X>-460</X><Y>540</Y>
 					<Label><X>35</X><Y>20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1566,9 +1650,15 @@ unit.delay.stopDelayForAll();]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[usePolicy]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[policyFile]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA["/Users/augustheiervangdahl/Downloads/MasterThesis-3hours-M1-masterthesis-E1-Policy.zip"]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[numberOfAgents]]></Name>
@@ -1634,6 +1724,1115 @@ unit.delay.stopDelayForAll();]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[eventCondition]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1615824276662</Id>
+					<Name><![CDATA[forklifts_conventional]]></Name>
+					<X>-170</X><Y>720</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Forklift]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[masterthesis]]></PackageName>
+							<ClassName><![CDATA[Forklift]]></ClassName>
+							<ItemName><![CDATA[1614173193470]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+					</Parameters>
+					<ReplicationFlag>true</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InEnvironment>true</InEnvironment>	
+					<InitialSpeedCode Class="CodeUnitValue">
+						<Code><![CDATA[20]]></Code>
+						<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+					</InitialSpeedCode>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>EMPTY</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1615824296496</Id>
+					<Name><![CDATA[supermarketFleet]]></Name>
+					<X>-180</X><Y>560</Y>
+					<Label><X>45</X><Y>5</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
+						<ClassName><![CDATA[TransporterFleet]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
+							<ClassName><![CDATA[TransporterFleet]]></ClassName>
+							<ItemName><![CDATA[1521021419454]]></ItemName>
+						</GenericParameterSubstituteReference>
+						<GenericParameterSubstituteValue Class="CodeValue">
+							<Code><![CDATA[Forklift]]></Code>
+						</GenericParameterSubstituteValue>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[navigationType]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.FREE_SPACE_NAVIGATION]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[recognizeAllTransporters]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacityDefinitionType]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[isConventionalEnabled ? 2 : 0]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacitySchedule]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[homeNodes]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[{ supermarketDock }]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[turnRadius]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[minDistanceToObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[isSpeedLimitedNearObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxSpeedNearObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[newTransporter]]></Name>
+							<Value Class="EntityCodeValue">
+								<IsAgentEntity>true</IsAgentEntity>
+								<EntityEmbeddedObject>
+									<ActiveObjectClass>
+										<PackageName><![CDATA[masterthesis]]></PackageName>
+										<ClassName><![CDATA[Forklift]]></ClassName>
+									</ActiveObjectClass>
+									<GenericParameterSubstitute>
+										<GenericParameterSubstituteReference>
+											<PackageName><![CDATA[masterthesis]]></PackageName>
+											<ClassName><![CDATA[Forklift]]></ClassName>
+											<ItemName><![CDATA[1614173193470]]></ItemName>
+										</GenericParameterSubstituteReference>
+									</GenericParameterSubstitute>
+									<Parameters>
+									</Parameters>
+									<ReplicationFlag>true</ReplicationFlag>
+									<Replication Class="CodeValue">
+										<Code><![CDATA[100]]></Code>
+									</Replication>
+									<CollectionType>ARRAY_LIST_BASED</CollectionType>
+									<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+									<XCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</XCode>
+									<YCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</YCode>
+									<ZCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</ZCode>
+									<ColumnCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</ColumnCode>
+									<RowCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</RowCode>
+									<LatitudeCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</LatitudeCode>
+									<LongitudeCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</LongitudeCode>
+									<LocationNameCode Class="CodeValue">
+										<Code><![CDATA[""]]></Code>
+									</LocationNameCode>
+									<InitializationType>LOAD_FROM_DATABASE</InitializationType>
+									<InitializationDatabaseTableQuery>
+										<TableReference>
+										</TableReference>
+									</InitializationDatabaseTableQuery>
+									<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+									<QuantityColumn>
+									</QuantityColumn>
+								</EntityEmbeddedObject>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[setDimensions]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[length]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[width]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[height]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maximumSpeed]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[limitSpeedOnCurvedSegment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maximumSpeedOnCurvedSegment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[acceleration]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[deceleration]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[delayForRouteCalculation]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[delayToResumeMovement]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customRouting]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[findPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pathsToAvoid]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[nodesToAvoid]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pathsToInclude]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[addToCustomPopulation]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[population]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[forklifts_conventional]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewTransporter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.fleetName = "supermarket";]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onSeize]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.source.inject(1);]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRelease]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.origin = -1;
+unit.deliveryMachine = -1;
+unit.assignedProduct = null;
+((Product)agent).assignedForklift = null;
+
+queryAnAction(unit);
+
+unit.delay.stopDelayForAll();]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onTransporterStateChanged]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnterPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnterNode]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitNode]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1615824538597</Id>
+					<Name><![CDATA[WS_3_4_fleet]]></Name>
+					<X>-180</X><Y>600</Y>
+					<Label><X>45</X><Y>5</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
+						<ClassName><![CDATA[TransporterFleet]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
+							<ClassName><![CDATA[TransporterFleet]]></ClassName>
+							<ItemName><![CDATA[1521021419454]]></ItemName>
+						</GenericParameterSubstituteReference>
+						<GenericParameterSubstituteValue Class="CodeValue">
+							<Code><![CDATA[Forklift]]></Code>
+						</GenericParameterSubstituteValue>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[navigationType]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.FREE_SPACE_NAVIGATION]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[recognizeAllTransporters]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacityDefinitionType]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[isConventionalEnabled ? 1 : 0]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacitySchedule]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[homeNodes]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[{ WS_3_4_dock }]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[turnRadius]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[minDistanceToObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[isSpeedLimitedNearObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxSpeedNearObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[newTransporter]]></Name>
+							<Value Class="EntityCodeValue">
+								<IsAgentEntity>true</IsAgentEntity>
+								<EntityEmbeddedObject>
+									<ActiveObjectClass>
+										<PackageName><![CDATA[masterthesis]]></PackageName>
+										<ClassName><![CDATA[Forklift]]></ClassName>
+									</ActiveObjectClass>
+									<GenericParameterSubstitute>
+										<GenericParameterSubstituteReference>
+											<PackageName><![CDATA[masterthesis]]></PackageName>
+											<ClassName><![CDATA[Forklift]]></ClassName>
+											<ItemName><![CDATA[1614173193470]]></ItemName>
+										</GenericParameterSubstituteReference>
+									</GenericParameterSubstitute>
+									<Parameters>
+									</Parameters>
+									<ReplicationFlag>true</ReplicationFlag>
+									<Replication Class="CodeValue">
+										<Code><![CDATA[100]]></Code>
+									</Replication>
+									<CollectionType>ARRAY_LIST_BASED</CollectionType>
+									<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+									<XCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</XCode>
+									<YCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</YCode>
+									<ZCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</ZCode>
+									<ColumnCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</ColumnCode>
+									<RowCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</RowCode>
+									<LatitudeCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</LatitudeCode>
+									<LongitudeCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</LongitudeCode>
+									<LocationNameCode Class="CodeValue">
+										<Code><![CDATA[""]]></Code>
+									</LocationNameCode>
+									<InitializationType>LOAD_FROM_DATABASE</InitializationType>
+									<InitializationDatabaseTableQuery>
+										<TableReference>
+										</TableReference>
+									</InitializationDatabaseTableQuery>
+									<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+									<QuantityColumn>
+									</QuantityColumn>
+								</EntityEmbeddedObject>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[setDimensions]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[length]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[width]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[height]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maximumSpeed]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[limitSpeedOnCurvedSegment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maximumSpeedOnCurvedSegment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[acceleration]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[deceleration]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[delayForRouteCalculation]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[delayToResumeMovement]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customRouting]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[findPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pathsToAvoid]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[nodesToAvoid]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pathsToInclude]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[addToCustomPopulation]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[population]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[forklifts_conventional]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewTransporter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.fleetName = "WS_3_4";]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onSeize]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.source.inject(1);]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRelease]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.origin = -1;
+unit.deliveryMachine = -1;
+unit.assignedProduct = null;
+((Product)agent).assignedForklift = null;
+
+queryAnAction(unit);
+
+unit.delay.stopDelayForAll();]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onTransporterStateChanged]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnterPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnterNode]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitNode]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1615824584736</Id>
+					<Name><![CDATA[WS_2_7_fleet]]></Name>
+					<X>-180</X><Y>640</Y>
+					<Label><X>45</X><Y>5</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
+						<ClassName><![CDATA[TransporterFleet]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
+							<ClassName><![CDATA[TransporterFleet]]></ClassName>
+							<ItemName><![CDATA[1521021419454]]></ItemName>
+						</GenericParameterSubstituteReference>
+						<GenericParameterSubstituteValue Class="CodeValue">
+							<Code><![CDATA[Forklift]]></Code>
+						</GenericParameterSubstituteValue>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[navigationType]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.FREE_SPACE_NAVIGATION]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[recognizeAllTransporters]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacityDefinitionType]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[isConventionalEnabled ? 1 : 0]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacitySchedule]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[homeNodes]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[{ WS_2_7_dock }]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[turnRadius]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[minDistanceToObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[isSpeedLimitedNearObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxSpeedNearObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[newTransporter]]></Name>
+							<Value Class="EntityCodeValue">
+								<IsAgentEntity>true</IsAgentEntity>
+								<EntityEmbeddedObject>
+									<ActiveObjectClass>
+										<PackageName><![CDATA[masterthesis]]></PackageName>
+										<ClassName><![CDATA[Forklift]]></ClassName>
+									</ActiveObjectClass>
+									<GenericParameterSubstitute>
+										<GenericParameterSubstituteReference>
+											<PackageName><![CDATA[masterthesis]]></PackageName>
+											<ClassName><![CDATA[Forklift]]></ClassName>
+											<ItemName><![CDATA[1614173193470]]></ItemName>
+										</GenericParameterSubstituteReference>
+									</GenericParameterSubstitute>
+									<Parameters>
+									</Parameters>
+									<ReplicationFlag>true</ReplicationFlag>
+									<Replication Class="CodeValue">
+										<Code><![CDATA[100]]></Code>
+									</Replication>
+									<CollectionType>ARRAY_LIST_BASED</CollectionType>
+									<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+									<XCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</XCode>
+									<YCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</YCode>
+									<ZCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</ZCode>
+									<ColumnCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</ColumnCode>
+									<RowCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</RowCode>
+									<LatitudeCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</LatitudeCode>
+									<LongitudeCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</LongitudeCode>
+									<LocationNameCode Class="CodeValue">
+										<Code><![CDATA[""]]></Code>
+									</LocationNameCode>
+									<InitializationType>LOAD_FROM_DATABASE</InitializationType>
+									<InitializationDatabaseTableQuery>
+										<TableReference>
+										</TableReference>
+									</InitializationDatabaseTableQuery>
+									<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+									<QuantityColumn>
+									</QuantityColumn>
+								</EntityEmbeddedObject>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[setDimensions]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[length]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[width]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[height]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maximumSpeed]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[limitSpeedOnCurvedSegment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maximumSpeedOnCurvedSegment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[acceleration]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[deceleration]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[delayForRouteCalculation]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[delayToResumeMovement]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customRouting]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[findPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pathsToAvoid]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[nodesToAvoid]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pathsToInclude]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[addToCustomPopulation]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[population]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[forklifts_conventional]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewTransporter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.fleetName = "WS_2_7";]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onSeize]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.source.inject(1);]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRelease]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.origin = -1;
+unit.deliveryMachine = -1;
+unit.assignedProduct = null;
+((Product)agent).assignedForklift = null;
+
+queryAnAction(unit);
+
+unit.delay.stopDelayForAll();]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onTransporterStateChanged]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnterPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnterNode]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitNode]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1615824647351</Id>
+					<Name><![CDATA[WS_5_6_1_fleet]]></Name>
+					<X>-180</X><Y>680</Y>
+					<Label><X>45</X><Y>5</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
+						<ClassName><![CDATA[TransporterFleet]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.material_handling]]></PackageName>
+							<ClassName><![CDATA[TransporterFleet]]></ClassName>
+							<ItemName><![CDATA[1521021419454]]></ItemName>
+						</GenericParameterSubstituteReference>
+						<GenericParameterSubstituteValue Class="CodeValue">
+							<Code><![CDATA[Forklift]]></Code>
+						</GenericParameterSubstituteValue>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[navigationType]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.FREE_SPACE_NAVIGATION]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[recognizeAllTransporters]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacityDefinitionType]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[isConventionalEnabled ? 1 : 0]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacitySchedule]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[homeNodes]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[{ homeDock }]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[turnRadius]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[minDistanceToObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[isSpeedLimitedNearObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxSpeedNearObstacle]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[newTransporter]]></Name>
+							<Value Class="EntityCodeValue">
+								<IsAgentEntity>true</IsAgentEntity>
+								<EntityEmbeddedObject>
+									<ActiveObjectClass>
+										<PackageName><![CDATA[masterthesis]]></PackageName>
+										<ClassName><![CDATA[Forklift]]></ClassName>
+									</ActiveObjectClass>
+									<GenericParameterSubstitute>
+										<GenericParameterSubstituteReference>
+											<PackageName><![CDATA[masterthesis]]></PackageName>
+											<ClassName><![CDATA[Forklift]]></ClassName>
+											<ItemName><![CDATA[1614173193470]]></ItemName>
+										</GenericParameterSubstituteReference>
+									</GenericParameterSubstitute>
+									<Parameters>
+									</Parameters>
+									<ReplicationFlag>true</ReplicationFlag>
+									<Replication Class="CodeValue">
+										<Code><![CDATA[100]]></Code>
+									</Replication>
+									<CollectionType>ARRAY_LIST_BASED</CollectionType>
+									<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+									<XCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</XCode>
+									<YCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</YCode>
+									<ZCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</ZCode>
+									<ColumnCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</ColumnCode>
+									<RowCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</RowCode>
+									<LatitudeCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</LatitudeCode>
+									<LongitudeCode Class="CodeValue">
+										<Code><![CDATA[0]]></Code>
+									</LongitudeCode>
+									<LocationNameCode Class="CodeValue">
+										<Code><![CDATA[""]]></Code>
+									</LocationNameCode>
+									<InitializationType>LOAD_FROM_DATABASE</InitializationType>
+									<InitializationDatabaseTableQuery>
+										<TableReference>
+										</TableReference>
+									</InitializationDatabaseTableQuery>
+									<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+									<QuantityColumn>
+									</QuantityColumn>
+								</EntityEmbeddedObject>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[setDimensions]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[length]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[width]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[height]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maximumSpeed]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[limitSpeedOnCurvedSegment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maximumSpeedOnCurvedSegment]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[acceleration]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[deceleration]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[delayForRouteCalculation]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[delayToResumeMovement]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customRouting]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[findPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pathsToAvoid]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[nodesToAvoid]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pathsToInclude]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[addToCustomPopulation]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[population]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[forklifts_conventional]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewTransporter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.fleetName = "WS_5_6_1";]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onSeize]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.source.inject(1);]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRelease]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[unit.origin = -1;
+unit.deliveryMachine = -1;
+unit.assignedProduct = null;
+((Product)agent).assignedForklift = null;
+
+queryAnAction(unit);
+
+unit.delay.stopDelayForAll();]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onTransporterStateChanged]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnterPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitPath]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnterNode]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitNode]]></Name>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>false</ReplicationFlag>
@@ -1849,7 +3048,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<RectangleNode>
 					<Id>1614173106142</Id>
 					<Name><![CDATA[homeDock]]></Name>
-					<X>325</X><Y>330</Y>
+					<X>370</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5150,6 +6349,474 @@ unit.delay.stopDelayForAll();]]></Code>
 						<RelativeWidth>0.8</RelativeWidth>
 					</Bars>
     			</BarChart>
+				<RectangleNode>
+					<Id>1615824352506</Id>
+					<Name><![CDATA[supermarketDock]]></Name>
+					<X>510</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<Z>0</Z>
+					<EmbeddedObject>
+						<ActiveObjectClass>
+							<PackageName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></PackageName>
+							<ClassName><![CDATA[AreaNodeDescriptor]]></ClassName>
+						</ActiveObjectClass>
+						<GenericParameterSubstitute>
+							<GenericParameterSubstituteReference>
+								<PackageName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></PackageName>
+								<ClassName><![CDATA[AreaNodeDescriptor]]></ClassName>
+								<ItemName><![CDATA[1574694148121]]></ItemName>
+							</GenericParameterSubstituteReference>
+						</GenericParameterSubstitute>
+						<Parameters>
+							<Parameter>
+								<Name><![CDATA[appliedClass]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[speedRestricted]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[maxSpeed]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[accessRestricted]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[accessRestrictionType]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[accessRestrictionCondition]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[capacity]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[throughput]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[schedule]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[avoidedIfClosed]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onEnter]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onEnterDenied]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onExit]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onOpen]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onClose]]></Name>
+							</Parameter>
+						</Parameters>
+						<ReplicationFlag>false</ReplicationFlag>
+						<Replication Class="CodeValue">
+							<Code><![CDATA[100]]></Code>
+						</Replication>
+						<CollectionType>ARRAY_LIST_BASED</CollectionType>
+						<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+						<XCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</XCode>
+						<YCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</YCode>
+						<ZCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</ZCode>
+						<ColumnCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</ColumnCode>
+						<RowCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</RowCode>
+						<LatitudeCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</LatitudeCode>
+						<LongitudeCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</LongitudeCode>
+						<LocationNameCode Class="CodeValue">
+							<Code><![CDATA[""]]></Code>
+						</LocationNameCode>
+						<InitializationType>SPECIFIED_NUMBER</InitializationType>
+						<InitializationDatabaseTableQuery>
+							<TableReference>
+							</TableReference>
+						</InitializationDatabaseTableQuery>
+						<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+						<QuantityColumn>
+						</QuantityColumn>
+					</EmbeddedObject>
+					<LineColor>-14774017</LineColor>
+					<FillColor/>
+					<LineWidth>1</LineWidth>
+					<LineMaterial>null</LineMaterial>
+					<FillMaterial>null</FillMaterial>
+					<LineStyle>DASHED</LineStyle>
+					<AttractorsLayout>random</AttractorsLayout>
+					<Sloped>false</Sloped>
+					<Slope>
+						<Id>1615824352504</Id>
+						<Name><![CDATA[supermarketDock]]></Name>
+						<X>0</X><Y>10</Y>
+						<PublicFlag>false</PublicFlag>
+						<PresentationFlag>true</PresentationFlag>
+						<ShowLabel>true</ShowLabel>
+						<Dx>20</Dx>
+						<Dy>0</Dy>
+						<Dz>0</Dz>
+						<AngleX>30</AngleX>
+						<AngleZ>0</AngleZ>
+						<SlopeType>angle</SlopeType>	
+					</Slope>
+
+					<Width>50</Width>
+					<Height>40</Height>
+					<Rotation>0.0</Rotation>
+				</RectangleNode>
+				<RectangleNode>
+					<Id>1615824371355</Id>
+					<Name><![CDATA[WS_3_4_dock]]></Name>
+					<X>180</X><Y>460</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<Z>0</Z>
+					<EmbeddedObject>
+						<ActiveObjectClass>
+							<PackageName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></PackageName>
+							<ClassName><![CDATA[AreaNodeDescriptor]]></ClassName>
+						</ActiveObjectClass>
+						<GenericParameterSubstitute>
+							<GenericParameterSubstituteReference>
+								<PackageName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></PackageName>
+								<ClassName><![CDATA[AreaNodeDescriptor]]></ClassName>
+								<ItemName><![CDATA[1574694148121]]></ItemName>
+							</GenericParameterSubstituteReference>
+						</GenericParameterSubstitute>
+						<Parameters>
+							<Parameter>
+								<Name><![CDATA[appliedClass]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[speedRestricted]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[maxSpeed]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[accessRestricted]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[accessRestrictionType]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[accessRestrictionCondition]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[capacity]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[throughput]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[schedule]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[avoidedIfClosed]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onEnter]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onEnterDenied]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onExit]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onOpen]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onClose]]></Name>
+							</Parameter>
+						</Parameters>
+						<ReplicationFlag>false</ReplicationFlag>
+						<Replication Class="CodeValue">
+							<Code><![CDATA[100]]></Code>
+						</Replication>
+						<CollectionType>ARRAY_LIST_BASED</CollectionType>
+						<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+						<XCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</XCode>
+						<YCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</YCode>
+						<ZCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</ZCode>
+						<ColumnCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</ColumnCode>
+						<RowCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</RowCode>
+						<LatitudeCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</LatitudeCode>
+						<LongitudeCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</LongitudeCode>
+						<LocationNameCode Class="CodeValue">
+							<Code><![CDATA[""]]></Code>
+						</LocationNameCode>
+						<InitializationType>SPECIFIED_NUMBER</InitializationType>
+						<InitializationDatabaseTableQuery>
+							<TableReference>
+							</TableReference>
+						</InitializationDatabaseTableQuery>
+						<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+						<QuantityColumn>
+						</QuantityColumn>
+					</EmbeddedObject>
+					<LineColor>-14774017</LineColor>
+					<FillColor/>
+					<LineWidth>1</LineWidth>
+					<LineMaterial>null</LineMaterial>
+					<FillMaterial>null</FillMaterial>
+					<LineStyle>DASHED</LineStyle>
+					<AttractorsLayout>random</AttractorsLayout>
+					<Sloped>false</Sloped>
+					<Slope>
+						<Id>1615824371353</Id>
+						<Name><![CDATA[WS_3_4_dock]]></Name>
+						<X>0</X><Y>10</Y>
+						<PublicFlag>false</PublicFlag>
+						<PresentationFlag>true</PresentationFlag>
+						<ShowLabel>true</ShowLabel>
+						<Dx>20</Dx>
+						<Dy>0</Dy>
+						<Dz>0</Dz>
+						<AngleX>30</AngleX>
+						<AngleZ>0</AngleZ>
+						<SlopeType>angle</SlopeType>	
+					</Slope>
+
+					<Width>50</Width>
+					<Height>40</Height>
+					<Rotation>0.0</Rotation>
+				</RectangleNode>
+				<RectangleNode>
+					<Id>1615824389154</Id>
+					<Name><![CDATA[WS_2_7_dock]]></Name>
+					<X>60</X><Y>220</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<Z>0</Z>
+					<EmbeddedObject>
+						<ActiveObjectClass>
+							<PackageName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></PackageName>
+							<ClassName><![CDATA[AreaNodeDescriptor]]></ClassName>
+						</ActiveObjectClass>
+						<GenericParameterSubstitute>
+							<GenericParameterSubstituteReference>
+								<PackageName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></PackageName>
+								<ClassName><![CDATA[AreaNodeDescriptor]]></ClassName>
+								<ItemName><![CDATA[1574694148121]]></ItemName>
+							</GenericParameterSubstituteReference>
+						</GenericParameterSubstitute>
+						<Parameters>
+							<Parameter>
+								<Name><![CDATA[appliedClass]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[speedRestricted]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[maxSpeed]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[accessRestricted]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[accessRestrictionType]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[accessRestrictionCondition]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[capacity]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[throughput]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[schedule]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[avoidedIfClosed]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onEnter]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onEnterDenied]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onExit]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onOpen]]></Name>
+							</Parameter>
+							<Parameter>
+								<Name><![CDATA[onClose]]></Name>
+							</Parameter>
+						</Parameters>
+						<ReplicationFlag>false</ReplicationFlag>
+						<Replication Class="CodeValue">
+							<Code><![CDATA[100]]></Code>
+						</Replication>
+						<CollectionType>ARRAY_LIST_BASED</CollectionType>
+						<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+						<XCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</XCode>
+						<YCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</YCode>
+						<ZCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</ZCode>
+						<ColumnCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</ColumnCode>
+						<RowCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</RowCode>
+						<LatitudeCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</LatitudeCode>
+						<LongitudeCode Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</LongitudeCode>
+						<LocationNameCode Class="CodeValue">
+							<Code><![CDATA[""]]></Code>
+						</LocationNameCode>
+						<InitializationType>SPECIFIED_NUMBER</InitializationType>
+						<InitializationDatabaseTableQuery>
+							<TableReference>
+							</TableReference>
+						</InitializationDatabaseTableQuery>
+						<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+						<QuantityColumn>
+						</QuantityColumn>
+					</EmbeddedObject>
+					<LineColor>-14774017</LineColor>
+					<FillColor/>
+					<LineWidth>1</LineWidth>
+					<LineMaterial>null</LineMaterial>
+					<FillMaterial>null</FillMaterial>
+					<LineStyle>DASHED</LineStyle>
+					<AttractorsLayout>random</AttractorsLayout>
+					<Sloped>false</Sloped>
+					<Slope>
+						<Id>1615824389152</Id>
+						<Name><![CDATA[WS_2_7_dock]]></Name>
+						<X>0</X><Y>10</Y>
+						<PublicFlag>false</PublicFlag>
+						<PresentationFlag>true</PresentationFlag>
+						<ShowLabel>true</ShowLabel>
+						<Dx>20</Dx>
+						<Dy>0</Dy>
+						<Dz>0</Dz>
+						<AngleX>30</AngleX>
+						<AngleZ>0</AngleZ>
+						<SlopeType>angle</SlopeType>	
+					</Slope>
+
+					<Width>50</Width>
+					<Height>40</Height>
+					<Rotation>0.0</Rotation>
+				</RectangleNode>
+				<Text>
+					<Id>1615824710773</Id>
+					<Name><![CDATA[text14]]></Name>
+					<X>-180</X><Y>500</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Conventional]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>16</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1615824953607</Id>
+					<Name><![CDATA[text15]]></Name>
+					<X>-460</X><Y>500</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Pathmind ]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>16</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1615824971457</Id>
+					<Name><![CDATA[text16]]></Name>
+					<X>-690</X><Y>500</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Heuristic ]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>16</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
 			</Presentation>
 
 				</Level>
@@ -5388,6 +7055,18 @@ unit.delay.stopDelayForAll();]]></Code>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[int]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1615824487435</Id>
+					<Name><![CDATA[fleetName]]></Name>
+					<X>200</X><Y>70</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[String]]></Type>        
 					</Properties>
 				</Variable>
 			</Variables>
@@ -8005,7 +9684,7 @@ main.supplyEntry]]></Code>
 						<Parameter>
 							<Name><![CDATA[fleet]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[main.transporterFleet]]></Code>
+								<Code><![CDATA[main.isConventionalEnabled ? main.supermarketFleet : main.transporterFleet;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -10065,39 +11744,6 @@ return wait.size() > 0 //there are products available for pickup
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[int]]></ReturnType>
-					<Id>1614945761826</Id>
-					<Name><![CDATA[getProcessStage]]></Name>
-					<X>50</X><Y>170</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[product]]></Name>
-						<Type><![CDATA[Product]]></Type>
-					</Parameter>
-					<Body><![CDATA[switch(machineNumber) {
-	case 0:
-		return 1;
-	case 1:
-		return 1;
-	case 2:
-		return product.productType == 0 ? 2 : 1;
-	case 3:
-		return 2;
-	case 4:
-		return product.productType == 0 ? 3 : 2;
-	case 5:
-		return 3;
-	case 6:
-		return 3;
-	default:
-		return -1;
-}]]></Body>
-				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1615291584892</Id>
 					<Name><![CDATA[isFinishPickupPossible]]></Name>
@@ -10146,6 +11792,35 @@ for (Product p : productsForPickup) {
 	}
 }
 return time() - tempLowest;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[TransporterFleet]]></ReturnType>
+					<Id>1615885413291</Id>
+					<Name><![CDATA[getConventionalFleet]]></Name>
+					<X>1380</X><Y>30</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[switch(machineNumber) {
+	case 0:
+		return main.WS_5_6_1_fleet;
+	case 1:
+		return main.WS_2_7_fleet;
+	case 2:
+		return main.WS_3_4_fleet;
+	case 3:
+		return main.WS_3_4_fleet;
+	case 4:
+		return main.WS_5_6_1_fleet;
+	case 5:
+		return main.WS_5_6_1_fleet;
+	case 6:
+		return main.WS_2_7_fleet;
+	default:
+		return null;
+}]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -11905,7 +13580,7 @@ feedSupplySize--;]]></Code>
 						<Parameter>
 							<Name><![CDATA[fleet]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[main.transporterFleet]]></Code>
+								<Code><![CDATA[main.isConventionalEnabled ? getConventionalFleet() : main.transporterFleet]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -13193,7 +14868,7 @@ productsForPickup.add(agent);]]></Code>
 						<Parameter>
 							<Name><![CDATA[fleet]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[main.transporterFleet]]></Code>
+								<Code><![CDATA[main.isConventionalEnabled ? getConventionalFleet() : main.transporterFleet]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -15182,6 +16857,9 @@ productReadyForEnd = null;]]></Code>
 				<Parameter>
 					<ParameterName><![CDATA[isPathmindEnabled]]></ParameterName>
 				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[isConventionalEnabled]]></ParameterName>
+				</Parameter>
 			</Parameters>			
 			<PresentationProperties>
 				<EnableZoomAndPanning>true</EnableZoomAndPanning>
@@ -15209,18 +16887,51 @@ productReadyForEnd = null;]]></Code>
 			<MaximumMemory>16384</MaximumMemory>
 			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
-			<BeforeEachExperimentRunCode><![CDATA[heuristic_throughput.reset();
-heuristic_throughput_product1.reset();
+			<BeforeEachExperimentRunCode><![CDATA[heuristic_throughput_product1.reset();
 heuristic_throughput_product2.reset();
-heuristic_throughput_product3.reset();]]></BeforeEachExperimentRunCode>
-			<AfterSimulationRunCode><![CDATA[heuristic_throughput.add(root.throughput);
-heuristic_throughput_product1.add(root.throughput_product1);
+heuristic_throughput_product3.reset();
+
+switch (mode) {
+	case 0:
+		pathmind_throughput.reset();
+		break;
+	case 1:
+		heuristic_throughput.reset();
+		break;
+}]]></BeforeEachExperimentRunCode>
+			<AfterSimulationRunCode><![CDATA[heuristic_throughput_product1.add(root.throughput_product1);
 heuristic_throughput_product2.add(root.throughput_product2);
-heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulationRunCode>
+heuristic_throughput_product3.add(root.throughput_product3);
+
+switch (mode) {
+	case 0:
+		pathmind_throughput.add( root.throughput );
+		break;
+	case 1:
+		heuristic_throughput.add( root.throughput );
+		break;
+}]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
 			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1615875390049</Id>
+					<Name><![CDATA[mode]]></Name>
+					<X>50</X><Y>630</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+			</Variables>
 			<AnalysisData>
     			<HistogramData>
 					<Id>1615294234771</Id>
@@ -15319,6 +17030,37 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 					<Id>1615390638160</Id>
 					<Name><![CDATA[heuristic_throughput_product3]]></Name>
 					<X>50</X><Y>590</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>false</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1602921600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+					<Value><![CDATA[]]></Value>
+					<NumberOfIntervals>30</NumberOfIntervals>
+					<MinMaxAutodetect>true</MinMaxAutodetect>
+					<RangeMinExpression><![CDATA[0]]></RangeMinExpression>
+					<RangeMaxExpression><![CDATA[1]]></RangeMaxExpression>
+					<InitialIntervalSize><![CDATA[1]]></InitialIntervalSize>
+					<CalculateCDF>true</CalculateCDF>
+					<CalculatePercentiles>false</CalculatePercentiles>
+					<LowPercent>10</LowPercent>
+					<HighPercent>10</HighPercent>
+					<Title><![CDATA[]]></Title>
+				</HistogramData>
+    			<HistogramData>
+					<Id>1615875444417</Id>
+					<Name><![CDATA[pathmind_throughput]]></Name>
+					<X>50</X><Y>470</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -15779,6 +17521,16 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 						<LineWidth>1</LineWidth>						
 						<Title><![CDATA[Random- Throughput]]></Title>							
 					</HistogramDataExpression>
+					<HistogramDataExpression>
+					<Expression><![CDATA[pathmind_throughput]]></Expression>
+						<ColorPDF>-9728477</ColorPDF>
+						<ColorCDF>-10496</ColorCDF>
+						<ColorLowPercent>-10496</ColorLowPercent>
+						<ColorHighPercent>-60269</ColorHighPercent>
+						<ColorMean>-9728477</ColorMean>
+						<LineWidth>1</LineWidth>						
+						<Title><![CDATA[Histogram Data Title]]></Title>							
+					</HistogramDataExpression>
     			</Histogram>
     			<Histogram>
 					<Id>1615390648891</Id>
@@ -15863,6 +17615,30 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 						<Title><![CDATA[Product 3]]></Title>							
 					</HistogramDataExpression>
     			</Histogram>
+				<Control Type="RadioButtons">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1615875390041</Id>
+					<Name><![CDATA[radio]]></Name>
+					<X>40</X><Y>350</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="190" Height="100">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="18" Style="0"/>
+						<Orientation>VERTICAL</Orientation>
+						<Button><![CDATA[Pathmind Policy]]></Button>
+						<Button><![CDATA[Heuristic]]></Button>
+						<LinkTo>true</LinkTo>
+						<Link>mode</Link>
+					</ExtendedProperties>
+				</Control>
 			</Presentation>
 
 			<AllowParallelEvaluations>true</AllowParallelEvaluations>
@@ -15886,6 +17662,9 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 			<FreeformParamValue>	
 				<Id>1615447310971</Id>
 			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1615824735794</Id>
+			</FreeformParamValue>
 			<RangeVariationParamValue>	
 				<Id>1614173363216</Id>
 				<Type>FIXED</Type>
@@ -15908,6 +17687,10 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
 				<Id>1615447310971</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1615824735794</Id>
 				<Type>FIXED</Type>
 			</RangeVariationParamValue>
 			<ModelTimeProperties>
@@ -15984,12 +17767,6 @@ heuristic_throughput_product3.add(root.throughput_product3);]]></AfterSimulation
 		<LibraryName><![CDATA[pathmind.policyhelper]]></LibraryName>
 		<VersionMajor>1</VersionMajor>
 		<VersionMinor>4</VersionMinor>
-		<VersionBuild>0</VersionBuild>
-    </RequiredLibraryReference>
-    <RequiredLibraryReference>
-		<LibraryName><![CDATA[pathmind_agv_tutorial]]></LibraryName>
-		<VersionMajor>0</VersionMajor>
-		<VersionMinor>0</VersionMinor>
 		<VersionBuild>0</VersionBuild>
     </RequiredLibraryReference>
 </Model>
