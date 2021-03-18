@@ -417,6 +417,58 @@ workstations.get(6).setRotation(PI/2);
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="Parameter">
+					<Id>1616071566616</Id>
+					<Name><![CDATA[pickUpPolicy]]></Name>
+					<X>-660</X><Y>620</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[1
+// 1 --> Longest wait time
+// 2 --> Shortest path]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1616071566614</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1616071658300</Id>
+					<Name><![CDATA[releasePolicy]]></Name>
+					<X>-660</X><Y>680</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[0  // 0 --> Nearest home
+// 1 --> Stay
+// 2 --> ]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1616071658298</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1614246580858</Id>
 					<Name><![CDATA[supermarketCollection]]></Name>
@@ -543,6 +595,24 @@ workstations.get(6).setRotation(PI/2);
 					</Properties>
 
 				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1616071703046</Id>
+					<Name><![CDATA[homeDocks]]></Name>
+					<X>-680</X><Y>750</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
+						<ElementClass><![CDATA[Node]]></ElementClass>
+						<ValueElementClass><![CDATA[String]]></ValueElementClass>
+						<CollectionInitializer Class="CodeValue">
+							<Code><![CDATA[{ homeDock, WS_2_7_dock, WS_3_4_dock, supermarketDock }]]></Code>
+						</CollectionInitializer>
+					</Properties>
+
+				</Variable>
 			</Variables>
 			<Functions>
 				<Function AccessType="default" StaticFunction="false">
@@ -597,8 +667,15 @@ if (heuristicProductToWs(agentId)) { // Assigns forklift to a random product in 
 	return;
 }
 
+Forklift forklift = forklifts.get(agentId);
 
-
+// Check if return
+if (!forklift.isBusy()) {
+	//System.out.println("Forklift " + forklift.getIndex() + " (" + agentId + ") can set return loc");
+	//forklift.moveTo(setHomeLocation());
+	heuristicHomeLocation(forklift);
+	return;
+}
 ]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
@@ -923,6 +1000,10 @@ return obs;]]></Body>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
 					<Parameter>
+						<Name><![CDATA[home_location]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Parameter>
 						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
@@ -941,6 +1022,11 @@ else if(origin < 11) {
 	} else {
 		sendTo_workstation(new_origin, dest_machine, agentId); 
 	}
+}
+
+Forklift flift = forklifts.get(agentId);
+if (!flift.isBusy()) {
+	flift.currentHomeLocation = homeDocks.get(home_location);
 }]]></Body>
 				</Function>
 				<Function AccessType="public" StaticFunction="false">
@@ -1002,36 +1088,34 @@ return false;]]></Body>
 						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
-					<Body><![CDATA[// Sort workstations according to distance compared to the current forklift position?
-// Introduce a task priority?
-//Forklift flift = forklifts.get(agentId);
-//Position pos = flift.getPosition();
+					<Body><![CDATA[Forklift flift = forklifts.get(agentId);
+List<Workstation> sortedWS = null;
 
-//System.out.println("Frklft: " + flift + "  posX: " + pos.x + " postY: " + pos.y);
+if (pickUpPolicy == 1) {	// Sort according to product pickup wait time
+	sortedWS = sortDescending(workstations, w -> w.getLongestTime());
+}
 
-// Sort according to product pickup wait time
-List<Workstation> sortedWS = sortDescending(workstations, w -> w.getLongestTime());
+if (pickUpPolicy == 2) {	// Sort according to shortest path to ws
+	sortedWS = sortAscending(workstations, w -> flift.distanceTo(w));
+}
 
 //check if there is pick up to be done on process lines
 for(Workstation w : sortedWS){
-	if (w.getLongestTime() != Double.NEGATIVE_INFINITY) {
-		int origin = w.getIndex();
-		if (w.isFinishPickupPossible()) {
-			// if (w.productReadyForEnd) { // REMOVED
-			sendTo_finish(origin, agentId);
+	int origin = w.getIndex();
+	if (w.isFinishPickupPossible()) {
+		// if (w.productReadyForEnd) { // REMOVED
+		sendTo_finish(origin, agentId);
+		return true;
+	}
+	if(w.isProcessPickupPossible()) { //if there is a pickup possible
+		Workstation dest = workstations.get(w.machineNumber + 2);
+		if(dest.hasSpaceOnConveyor()){
+			//String s = "Sending forklift " + agentId + " to workstation " + origin + " delivery to " + dest.machineNumber;
+			//System.out.println(s);
+			sendTo_workstation(origin, dest.machineNumber, agentId);
 			return true;
 		}
-		if(w.isProcessPickupPossible()) { //if there is a pickup possible
-			Workstation dest = workstations.get(w.machineNumber + 2);
-			if(dest.hasSpaceOnConveyor()){
-				//String s = "Sending forklift " + agentId + " to workstation " + origin + " delivery to " + dest.machineNumber;
-				//System.out.println(s);
-				sendTo_workstation(origin, dest.machineNumber, agentId);
-				return true;
-			}
-		}
 	}
-	
 }
 return false;]]></Body>
 				</Function>
@@ -1040,7 +1124,7 @@ return false;]]></Body>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1615748973074</Id>
 					<Name><![CDATA[heuristicProductToWs]]></Name>
-					<X>-670</X><Y>620</Y>
+					<X>-670</X><Y>640</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1189,6 +1273,58 @@ for ( Workstation w : workstations ) {
 }
 
 return obs;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1616071625079</Id>
+					<Name><![CDATA[heuristicHomeLocation]]></Name>
+					<X>-670</X><Y>660</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[flift]]></Name>
+						<Type><![CDATA[Forklift]]></Type>
+					</Parameter>
+					<Body><![CDATA[double currentDistance = Double.POSITIVE_INFINITY;
+Node homeNode = homeDocks.get(0);
+
+//System.out.println(homeNode.getPosition(0, 1, null));
+
+if (releasePolicy == 0) { // Nearest home
+	for (Node nd : homeDocks) {
+		Position pos = nd.getPosition(0, 1, null);
+		Point p = new Point(pos.x, pos.y);
+		Double dist = flift.distanceTo(p);
+		if (dist < currentDistance) {
+			homeNode = nd;
+			currentDistance = dist;
+		}
+	}
+	flift.currentHomeLocation = homeNode;
+}
+if (releasePolicy == 1) { // Stay
+	return;
+}
+]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[Node]]></ReturnType>
+					<Id>1616071768549</Id>
+					<Name><![CDATA[setHomeLocation]]></Name>
+					<X>-680</X><Y>770</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[flift]]></Name>
+						<Type><![CDATA[Forklift]]></Type>
+					</Parameter>
+					<Body><![CDATA[return flift.currentHomeLocation;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -1833,7 +1969,9 @@ unit.delay.stopDelayForAll();]]></Code>
    @Discrete(n = 11, size = 1) int origin; 
    @Discrete(n = 7, size = 1) int destination_machine;
    
-   void doIt() { doAction(origin, destination_machine, agentId);};
+   @Discrete(n = 4, size = 1) int home_location;
+   
+   void doIt() { doAction(origin, destination_machine, home_location, agentId);};
 }]]></Code>
 							</Value>
 						</Parameter>
@@ -6957,6 +7095,27 @@ unit.delay.stopDelayForAll();]]></Code>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Text>
+					<Id>1616071691485</Id>
+					<Name><![CDATA[text17]]></Name>
+					<X>-690</X><Y>720</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Return]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>16</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
 			</Presentation>
 
 				</Level>
@@ -7282,6 +7441,21 @@ unit.delay.stopDelayForAll();]]></Code>
 						<Type><![CDATA[int]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616071839976</Id>
+					<Name><![CDATA[currentHomeLocation]]></Name>
+					<X>330</X><Y>50</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[Node]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[main.homeDocks.get(0);]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -12452,6 +12626,9 @@ return false;]]></Body>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseMovingPolicy]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.MP_GO_TO]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[transporterChoiceCondition]]></Name>
@@ -12630,6 +12807,9 @@ return false;]]></Body>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseDestinationNode]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[main.setHomeLocation((Forklift)unit)]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseDestinationConveyor]]></Name>
@@ -12845,6 +13025,9 @@ return false;]]></Body>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseMovingPolicy]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.MP_GO_TO]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[transporterChoiceCondition]]></Name>
@@ -13017,6 +13200,9 @@ return false;]]></Body>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseDestinationNode]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[main.setHomeLocation((Forklift)unit);]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseDestinationConveyor]]></Name>
@@ -15632,6 +15818,9 @@ productsForPickup.remove(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseMovingPolicy]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.MP_GO_TO]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseDestinationType]]></Name>
@@ -15650,6 +15839,9 @@ productsForPickup.remove(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseDestinationNode]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[main.setHomeLocation((Forklift)unit);]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[releaseDestinationConveyor]]></Name>
@@ -17171,6 +17363,12 @@ productReadyForEnd = null;]]></Code>
 				<Parameter>
 					<ParameterName><![CDATA[isConventionalEnabled]]></ParameterName>
 				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[pickUpPolicy]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[releasePolicy]]></ParameterName>
+				</Parameter>
 			</Parameters>			
 			<PresentationProperties>
 				<EnableZoomAndPanning>true</EnableZoomAndPanning>
@@ -17976,6 +18174,12 @@ switch (mode) {
 			<FreeformParamValue>	
 				<Id>1615824735794</Id>
 			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1616071566616</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1616071658300</Id>
+			</FreeformParamValue>
 			<RangeVariationParamValue>	
 				<Id>1614173363216</Id>
 				<Type>FIXED</Type>
@@ -18002,6 +18206,14 @@ switch (mode) {
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
 				<Id>1615824735794</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1616071566616</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1616071658300</Id>
 				<Type>FIXED</Type>
 			</RangeVariationParamValue>
 			<ModelTimeProperties>
