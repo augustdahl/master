@@ -196,7 +196,7 @@ workstations.get(6).setRotation(PI/2);
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
+						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[0]]></Code>
 						</InitialValue>
@@ -211,7 +211,7 @@ workstations.get(6).setRotation(PI/2);
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
+						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[0]]></Code>
 						</InitialValue>
@@ -226,7 +226,7 @@ workstations.get(6).setRotation(PI/2);
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
+						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[0]]></Code>
 						</InitialValue>
@@ -382,7 +382,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[true]]></Code>
+							<Code><![CDATA[false]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1615447310969</Id>
@@ -655,7 +655,8 @@ if (isPathmindEnabled) {
 						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
-					<Body><![CDATA[if (heuristicWsSupply(agentId)) { // Supplies WS with biggest feedProd queue size
+					<Body><![CDATA[
+if (heuristicWsSupply(agentId)) { // Supplies WS with biggest feedProd queue size
 	return;
 }
 
@@ -668,6 +669,7 @@ if (heuristicProductToWs(agentId)) { // Assigns forklift to a random product in 
 }
 
 Forklift forklift = forklifts.get(agentId);
+//System.out.println(forklift.travelToPickupTime);
 
 // Check if return
 if (!forklift.isBusy()) {
@@ -808,6 +810,11 @@ if(!w_origin.isProcessPickupPossible()){
 	return;
 }
 
+//check essential pickup
+if (w_origin.isEssentialPickup()) {
+	currentForklift.essentialPickup++;
+}
+
 //System.out.println("workstation: Pickup possible");
 Product product = w_origin.wait.get(0);
 Wait waitBlock = w_origin.wait;
@@ -821,6 +828,8 @@ if(destination.hasSpaceOnConveyor()){	//is there space in destination
 	if(destination.isEssentialDelivery(false)) {
 		currentForklift.essentialDelivery++;
 	}
+	
+	System.out.println(currentForklift.essentialPickup);
 	
 	//update expected nembers for destination
 	destination.numExpectedProd++;
@@ -1325,6 +1334,18 @@ if (releasePolicy == 1) { // Stay
 						<Type><![CDATA[Forklift]]></Type>
 					</Parameter>
 					<Body><![CDATA[return flift.currentHomeLocation;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1616085416893</Id>
+					<Name><![CDATA[getBalancedThroughput]]></Name>
+					<X>-670</X><Y>320</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return throughput/products.size();]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -1913,7 +1934,7 @@ unit.delay.stopDelayForAll();]]></Code>
 						<Parameter>
 							<Name><![CDATA[policyFile]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA["/Users/augustheiervangdahl/Downloads/MasterThesis-3hours-M1-masterthesis-E1-Policy.zip"]]></Code>
+								<Code><![CDATA["/Users/axel/Downloads/Balancedtestrun2-M1-masterthesis-E2-Policy.zip"]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -1947,9 +1968,13 @@ unit.delay.stopDelayForAll();]]></Code>
 								<Code><![CDATA[class Metrics {
     //collective rewards
     double totalThroughput = throughput;
+    double p1 = throughput_product1;
+    double p2 = throughput_product2;
+    double p3 = throughput_product3;
 	double fullConveyor = fullFinishConveyor;
 	//individual rewards
 	double essentialDelivery = forklifts.get(agentId).essentialDelivery;
+	double essentialPickup = forklifts.get(agentId).essentialPickup;
 	double trips = forklifts.get(agentId).trips;
 	double tripDuration = time() - forklifts.get(agentId).startTrip;
 	double aveTripDuration = forklifts.get(agentId).avgTripDuration(); 
@@ -1957,6 +1982,7 @@ unit.delay.stopDelayForAll();]]></Code>
 	double fullQueue = forklifts.get(agentId).fullQueue;
 	double invalid = forklifts.get(agentId).invalidAction;
 	double forkliftUtilization = forklifts.get(agentId).resourcePool.utilization();
+	double timeToPickup = forklifts.get(agentId).travelToPickupTime;
     
 }]]></Code>
 							</Value>
@@ -7459,6 +7485,30 @@ unit.delay.stopDelayForAll();]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616146186056</Id>
+					<Name><![CDATA[travelToPickupTime]]></Name>
+					<X>330</X><Y>80</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616162220228</Id>
+					<Name><![CDATA[essentialPickup]]></Name>
+					<X>480</X><Y>30</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
 			</Variables>
 			<Connectors>
 				<Connector>
@@ -10337,7 +10387,7 @@ if (isProduct) {
 } else {
 	main.workstations.get(machine).enter.take(agent); 
 }
-
+agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.startTrip;
 source.inject(1);]]></Code>
 							</Value>
 						</Parameter>
@@ -11300,6 +11350,36 @@ source.inject(1);]]></Code>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616162583914</Id>
+					<Name><![CDATA[numProductsInSystem]]></Name>
+					<X>50</X><Y>250</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616162747852</Id>
+					<Name><![CDATA[numOnFinish]]></Name>
+					<X>50</X><Y>270</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[0]]></Code>
 						</InitialValue>
@@ -12300,6 +12380,21 @@ if(totalProd_inStorageAndExpected() == 0)
 if(totalSupply_inStorageAndExpected() > totalProd_inStorageAndExpected())
 	return true;
 
+return false;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1616162023044</Id>
+					<Name><![CDATA[isEssentialPickup]]></Name>
+					<X>200</X><Y>70</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[System.out.println("WS: " + (machineNumber+1) + " on finish " + numOnFinish);
+if(numOnFinish > 0) 
+	return true;
 return false;]]></Body>
 				</Function>
 			</Functions>
@@ -13678,7 +13773,8 @@ return false;]]></Body>
 							<Name><![CDATA[onExitTrue]]></Name>
 							<Value Class="CodeValue">
 								<Code><![CDATA[feedProdSize++;
-numExpectedProd--;]]></Code>
+numExpectedProd--;
+numProductsInSystem++;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -13991,7 +14087,8 @@ numExpectedSupply--;]]></Code>
 							<Value Class="CodeValue">
 								<Code><![CDATA[agent.stagesComplete++;
 feedProdSize--;
-feedSupplySize--;]]></Code>
+feedSupplySize--;
+numOnFinish++;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -14232,7 +14329,9 @@ feedSupplySize--;]]></Code>
 							<Name><![CDATA[onSeizeTransporter]]></Name>
 							<Value Class="CodeValue">
 								<Code><![CDATA[agent.waitForPickup = 0;
-productsForPickup.remove(agent);]]></Code>
+productsForPickup.remove(agent);
+numProductsInSystem--;
+numOnFinish--;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -14316,7 +14415,8 @@ productsForPickup.remove(agent);]]></Code>
 //"\n Stages completed for assigned forklift's assigned product: " + agent.assignedForklift.assignedProduct.stagesComplete + 
 //"\n Assigned forklift's product is this product? " + sameProduct);
 Workstation w = main.workstations.get(agent.assignedForklift.deliveryMachine);
-w.enter.take(agent);]]></Code>
+w.enter.take(agent);
+agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.startTrip;]]></Code>
 							</Value>
 						</Parameter>
 					</Parameters>
@@ -15523,15 +15623,14 @@ productsForPickup.add(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onEnter]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[//System.out.println("Transporter finished seized")]]></Code>
-							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onSeizeTransporter]]></Name>
 							<Value Class="CodeValue">
 								<Code><![CDATA[agent.waitForPickup = 0;
-productsForPickup.remove(agent);]]></Code>
+productsForPickup.remove(agent);
+numProductsInSystem--;
+numOnFinish--;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -15882,7 +15981,8 @@ productsForPickup.remove(agent);]]></Code>
 						<Parameter>
 							<Name><![CDATA[onEnter]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[//System.out.println("Moving to Workstation End")]]></Code>
+								<Code><![CDATA[//System.out.println("Moving to Workstation End")
+agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.startTrip;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
