@@ -247,6 +247,21 @@ workstations.get(6).setRotation(PI/2);
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616441993008</Id>
+					<Name><![CDATA[imbalance_prods]]></Name>
+					<X>-670</X><Y>250</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1614173363216</Id>
 					<Name><![CDATA[numberOfForklifts]]></Name>
@@ -357,7 +372,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[5]]></Code>
+							<Code><![CDATA[3]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1614939118779</Id>
@@ -382,7 +397,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[false]]></Code>
+							<Code><![CDATA[true]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1615447310969</Id>
@@ -613,6 +628,24 @@ workstations.get(6).setRotation(PI/2);
 					</Properties>
 
 				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1616437213906</Id>
+					<Name><![CDATA[throughput_prods]]></Name>
+					<X>-670</X><Y>270</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
+						<ElementClass><![CDATA[Double]]></ElementClass>
+						<ValueElementClass><![CDATA[String]]></ValueElementClass>
+						<CollectionInitializer Class="CodeValue">
+							<Code><![CDATA[{ throughput_product1, throughput_product2, throughput_product3 }]]></Code>
+						</CollectionInitializer>
+					</Properties>
+
+				</Variable>
 			</Variables>
 			<Functions>
 				<Function AccessType="default" StaticFunction="false">
@@ -812,6 +845,7 @@ if(!w_origin.isProcessPickupPossible()){
 
 //check essential pickup
 if (w_origin.isEssentialPickup()) {
+	// System.out.println("Found essential pickup at "+ (w_origin.machineNumber+1));
 	currentForklift.essentialPickup++;
 }
 
@@ -829,7 +863,7 @@ if(destination.hasSpaceOnConveyor()){	//is there space in destination
 		currentForklift.essentialDelivery++;
 	}
 	
-	System.out.println(currentForklift.essentialPickup);
+	//System.out.println(currentForklift.essentialPickup);
 	
 	//update expected nembers for destination
 	destination.numExpectedProd++;
@@ -930,7 +964,7 @@ return obs;]]></Body>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[double[] obs = new double[5*workstations.size()];
+					<Body><![CDATA[double[] obs = new double[7*workstations.size()];
 
 int count = 0;
 for ( Workstation w : workstations ) {
@@ -941,6 +975,8 @@ for ( Workstation w : workstations ) {
 	obs[count++] = w.numExpectedSupply;
 	
 	obs[count++] = w.isProcessPickupPossible() ? 1 : 0;
+	obs[count++] = w.isFinishPickupPossible() ? 1 : 0;
+	obs[count++] = w.numOnFinish;
 }
 
 return obs;]]></Body>
@@ -1016,7 +1052,7 @@ return obs;]]></Body>
 						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
-					<Body><![CDATA[
+					<Body><![CDATA[//System.out.println(imbalance_pros);
 if(origin < 4) { 
 	//origin is one of 4 supermarkets
 	sendTo_supermarket(origin, dest_machine, agentId);
@@ -1346,6 +1382,20 @@ if (releasePolicy == 1) { // Stay
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[return throughput/products.size();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1616436851672</Id>
+					<Name><![CDATA[updateProdBalance]]></Name>
+					<X>-670</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[double minn = Collections.min(throughput_prods);
+if (throughput != 0)
+	imbalance_prods = 1/((minn+1)/throughput);]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -1930,11 +1980,14 @@ unit.delay.stopDelayForAll();]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[usePolicy]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[policyFile]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA["/Users/axel/Downloads/Balancedtestrun2-M1-masterthesis-E2-Policy.zip"]]></Code>
+								<Code><![CDATA["/Users/axel/Downloads/Fixedhome-M1-masterthesis-E2-Policy.zip"]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -1971,7 +2024,8 @@ unit.delay.stopDelayForAll();]]></Code>
     double p1 = throughput_product1;
     double p2 = throughput_product2;
     double p3 = throughput_product3;
-	double fullConveyor = fullFinishConveyor;
+    double imbalance_pen = imbalance_prods;
+	//double fullConveyor = fullFinishConveyor;
 	//individual rewards
 	double essentialDelivery = forklifts.get(agentId).essentialDelivery;
 	double essentialPickup = forklifts.get(agentId).essentialPickup;
@@ -1979,7 +2033,7 @@ unit.delay.stopDelayForAll();]]></Code>
 	double tripDuration = time() - forklifts.get(agentId).startTrip;
 	double aveTripDuration = forklifts.get(agentId).avgTripDuration(); 
 	double emptyOrigins = forklifts.get(agentId).emptyOrigins;
-	double fullQueue = forklifts.get(agentId).fullQueue;
+	//double fullQueue = forklifts.get(agentId).fullQueue;
 	double invalid = forklifts.get(agentId).invalidAction;
 	double forkliftUtilization = forklifts.get(agentId).resourcePool.utilization();
 	double timeToPickup = forklifts.get(agentId).travelToPickupTime;
@@ -12282,7 +12336,7 @@ return waitFinish.size() > 0 //there are products available for pickup
 					</Parameter>
 					<Body><![CDATA[Workstation ws = main.workstations.get(getIndex());
 Position ws_pos = ws.getPosition();
-System.out.println("Position of WS " + getIndex() + " postion: " + ws_pos);
+//System.out.println("Position of WS " + getIndex() + " postion: " + ws_pos);
 return 0;]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
@@ -12392,7 +12446,7 @@ return false;]]></Body>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[System.out.println("WS: " + (machineNumber+1) + " on finish " + numOnFinish);
+					<Body><![CDATA[//System.out.println("WS: " + (machineNumber+1) + " on finish " + numOnFinish);
 if(numOnFinish > 0) 
 	return true;
 return false;]]></Body>
@@ -16095,7 +16149,9 @@ agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.star
 		break;
 }
 main.throughput++;
-productReadyForEnd = null;]]></Code>
+productReadyForEnd = null;
+//agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.startTrip;
+main.updateProdBalance();]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
