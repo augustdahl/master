@@ -63,6 +63,8 @@ invalid | sendTo-action attempts to send product to invalid WS (not following th
 forkliftUtilization | Utilization
 timeToPickup | Duration (sec) from seizing forklift to pick-up at WS or supermarket
 
+***
+
 ## Actions
 
 ```java
