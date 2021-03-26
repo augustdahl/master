@@ -118,7 +118,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="PlainVariable">
 					<Id>1614246580877</Id>
 					<Name><![CDATA[color_product1]]></Name>
-					<X>-670</X><Y>110</Y>
+					<X>-650</X><Y>160</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -133,7 +133,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="PlainVariable">
 					<Id>1614246580881</Id>
 					<Name><![CDATA[color_product2]]></Name>
-					<X>-670</X><Y>130</Y>
+					<X>-650</X><Y>180</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -148,7 +148,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="PlainVariable">
 					<Id>1614246580885</Id>
 					<Name><![CDATA[color_product3]]></Name>
-					<X>-670</X><Y>150</Y>
+					<X>-650</X><Y>200</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -178,7 +178,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="PlainVariable">
 					<Id>1614596127526</Id>
 					<Name><![CDATA[currentForklift]]></Name>
-					<X>-230</X><Y>230</Y>
+					<X>-260</X><Y>350</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -190,7 +190,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="PlainVariable">
 					<Id>1614957058182</Id>
 					<Name><![CDATA[throughput_product1]]></Name>
-					<X>-670</X><Y>380</Y>
+					<X>-650</X><Y>370</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -205,7 +205,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="PlainVariable">
 					<Id>1614957072731</Id>
 					<Name><![CDATA[throughput_product2]]></Name>
-					<X>-670</X><Y>410</Y>
+					<X>-650</X><Y>390</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -220,7 +220,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="PlainVariable">
 					<Id>1614957077599</Id>
 					<Name><![CDATA[throughput_product3]]></Name>
-					<X>-670</X><Y>440</Y>
+					<X>-650</X><Y>410</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -235,7 +235,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="PlainVariable">
 					<Id>1615980254553</Id>
 					<Name><![CDATA[fullFinishConveyor]]></Name>
-					<X>-670</X><Y>470</Y>
+					<X>-670</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -262,25 +262,10 @@ workstations.get(6).setRotation(PI/2);
 						</InitialValue>
 					</Properties>
 				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1616668406540</Id>
-					<Name><![CDATA[firstAction]]></Name>
-					<X>-240</X><Y>540</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1614173363216</Id>
 					<Name><![CDATA[numberOfForklifts]]></Name>
-					<X>-250</X><Y>150</Y>
+					<X>-280</X><Y>260</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -290,7 +275,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[5]]></Code>
+							<Code><![CDATA[3]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1614173363214</Id>
@@ -304,7 +289,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1614250429097</Id>
 					<Name><![CDATA[conveyorSpeed]]></Name>
-					<X>-250</X><Y>120</Y>
+					<X>-280</X><Y>230</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -328,7 +313,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1614939118760</Id>
 					<Name><![CDATA[maxProductsOnConveyor]]></Name>
-					<X>-250</X><Y>20</Y>
+					<X>-280</X><Y>160</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -352,7 +337,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1614939118773</Id>
 					<Name><![CDATA[maxSupplyWaiting]]></Name>
-					<X>-250</X><Y>40</Y>
+					<X>-280</X><Y>180</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -377,7 +362,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1614939118781</Id>
 					<Name><![CDATA[maxNumOnFinishConveyor]]></Name>
-					<X>-250</X><Y>60</Y>
+					<X>-280</X><Y>200</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -402,7 +387,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1615447310971</Id>
 					<Name><![CDATA[isPathmindEnabled]]></Name>
-					<X>-450</X><Y>590</Y>
+					<X>-470</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -426,7 +411,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1615824735794</Id>
 					<Name><![CDATA[isConventionalEnabled]]></Name>
-					<X>-240</X><Y>560</Y>
+					<X>-280</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -502,7 +487,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1616664751312</Id>
 					<Name><![CDATA[numOfConventionalForklifts]]></Name>
-					<X>-240</X><Y>580</Y>
+					<X>-280</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -544,7 +529,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="CollectionVariable">
 					<Id>1614246580871</Id>
 					<Name><![CDATA[productColors]]></Name>
-					<X>-670</X><Y>190</Y>
+					<X>-670</X><Y>140</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -688,7 +673,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="CollectionVariable">
 					<Id>1616665965383</Id>
 					<Name><![CDATA[convHomeLocations]]></Name>
-					<X>-240</X><Y>660</Y>
+					<X>-280</X><Y>660</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -710,7 +695,7 @@ workstations.get(6).setRotation(PI/2);
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1614596058308</Id>
 					<Name><![CDATA[queryAnAction]]></Name>
-					<X>-250</X><Y>200</Y>
+					<X>-280</X><Y>320</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -774,7 +759,7 @@ if (!forklift.isBusy()) {
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1614596671821</Id>
 					<Name><![CDATA[sendTo_supermarket]]></Name>
-					<X>-230</X><Y>260</Y>
+					<X>-260</X><Y>380</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -851,7 +836,7 @@ if( (isSupply && destination.hasSpaceForSupply())
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1614943831537</Id>
 					<Name><![CDATA[sendTo_workstation]]></Name>
-					<X>-230</X><Y>290</Y>
+					<X>-260</X><Y>410</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -927,7 +912,7 @@ if(destination.hasSpaceOnConveyor()){	//is there space in destination
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1615291136463</Id>
 					<Name><![CDATA[sendTo_finish]]></Name>
-					<X>-230</X><Y>320</Y>
+					<X>-260</X><Y>440</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -967,7 +952,7 @@ waitBlock.freeAll();]]></Body>
 					<ReturnType><![CDATA[double []]]></ReturnType>
 					<Id>1615445654000</Id>
 					<Name><![CDATA[getObs_Forklift]]></Name>
-					<X>-450</X><Y>670</Y>
+					<X>-470</X><Y>650</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -997,7 +982,7 @@ return obs;]]></Body>
 					<ReturnType><![CDATA[double []]]></ReturnType>
 					<Id>1615445654006</Id>
 					<Name><![CDATA[getObs_workstation_inventory]]></Name>
-					<X>-450</X><Y>710</Y>
+					<X>-470</X><Y>690</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1024,7 +1009,7 @@ return obs;]]></Body>
 					<ReturnType><![CDATA[double[]]]></ReturnType>
 					<Id>1615445654011</Id>
 					<Name><![CDATA[getObs_Forklift_selfOnly]]></Name>
-					<X>-450</X><Y>690</Y>
+					<X>-470</X><Y>670</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1050,7 +1035,7 @@ return obs;]]></Body>
 					<ReturnType><![CDATA[double []]]></ReturnType>
 					<Id>1615445654015</Id>
 					<Name><![CDATA[getObs_supermarket]]></Name>
-					<X>-450</X><Y>730</Y>
+					<X>-470</X><Y>710</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1069,7 +1054,7 @@ return obs;]]></Body>
 					<ReturnType><![CDATA[SelectOutputOut]]></ReturnType>
 					<Id>1615446184444</Id>
 					<Name><![CDATA[doAction]]></Name>
-					<X>-450</X><Y>770</Y>
+					<X>-470</X><Y>750</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1117,7 +1102,7 @@ if (!flift.isBusy()) {
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1615449855814</Id>
 					<Name><![CDATA[isSkip]]></Name>
-					<X>-450</X><Y>620</Y>
+					<X>-470</X><Y>610</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1236,7 +1221,7 @@ return false;]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1615824764430</Id>
 					<Name><![CDATA[conventionalAction]]></Name>
-					<X>-240</X><Y>600</Y>
+					<X>-280</X><Y>600</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1270,7 +1255,7 @@ return false;]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1615887040615</Id>
 					<Name><![CDATA[conventionalWsPickup]]></Name>
-					<X>-220</X><Y>620</Y>
+					<X>-260</X><Y>620</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1307,7 +1292,7 @@ for(Workstation w : ws_list){
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1615887514341</Id>
 					<Name><![CDATA[conventionalSupermarketPickup]]></Name>
-					<X>-220</X><Y>640</Y>
+					<X>-260</X><Y>640</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1344,7 +1329,7 @@ if(supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConv
 					<ReturnType><![CDATA[double []]]></ReturnType>
 					<Id>1616066952612</Id>
 					<Name><![CDATA[getObs_workstation_processProgress]]></Name>
-					<X>-450</X><Y>750</Y>
+					<X>-470</X><Y>730</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1464,7 +1449,7 @@ if (throughput != 0)
 				<EmbeddedObject>
 					<Id>0</Id>
 					<Name><![CDATA[forklifts]]></Name>
-					<X>-480</X><Y>180</Y>
+					<X>-480</X><Y>230</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1536,7 +1521,7 @@ if (throughput != 0)
 				<EmbeddedObject>
 					<Id>1614173436745</Id>
 					<Name><![CDATA[transporterFleet]]></Name>
-					<X>-470</X><Y>50</Y>
+					<X>-480</X><Y>110</Y>
 					<Label><X>45</X><Y>5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1796,7 +1781,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObject>
 					<Id>0</Id>
 					<Name><![CDATA[supermarkets]]></Name>
-					<X>-480</X><Y>100</Y>
+					<X>-480</X><Y>170</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1861,7 +1846,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObject>
 					<Id>0</Id>
 					<Name><![CDATA[products]]></Name>
-					<X>-480</X><Y>140</Y>
+					<X>-480</X><Y>200</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1926,7 +1911,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObject>
 					<Id>0</Id>
 					<Name><![CDATA[workstations]]></Name>
-					<X>-480</X><Y>220</Y>
+					<X>-480</X><Y>260</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1992,7 +1977,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObject>
 					<Id>1615445426648</Id>
 					<Name><![CDATA[pathmindHelper]]></Name>
-					<X>-460</X><Y>540</Y>
+					<X>-480</X><Y>540</Y>
 					<Label><X>35</X><Y>20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6045,7 +6030,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<Text>
 					<Id>1615824710773</Id>
 					<Name><![CDATA[text14]]></Name>
-					<X>-240</X><Y>500</Y>
+					<X>-280</X><Y>510</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6066,7 +6051,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<Text>
 					<Id>1615824953607</Id>
 					<Name><![CDATA[text15]]></Name>
-					<X>-460</X><Y>500</Y>
+					<X>-480</X><Y>510</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6087,7 +6072,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<Text>
 					<Id>1615824971457</Id>
 					<Name><![CDATA[text16]]></Name>
-					<X>-690</X><Y>500</Y>
+					<X>-690</X><Y>510</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6132,7 +6117,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObjectPresentation>
 					<Id>1614173411996</Id>
 					<Name><![CDATA[forklifts_presentation]]></Name>
-					<X>-380</X><Y>180</Y>
+					<X>-390</X><Y>230</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6170,7 +6155,7 @@ unit.delay.stopDelayForAll();]]></Code>
 				<EmbeddedObjectPresentation>
 					<Id>1614246013131</Id>
 					<Name><![CDATA[products_presentation]]></Name>
-					<X>-380</X><Y>140</Y>
+					<X>-380</X><Y>160</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
