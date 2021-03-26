@@ -277,54 +277,6 @@ workstations.get(6).setRotation(PI/2);
 						</InitialValue>
 					</Properties>
 				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1616685085888</Id>
-					<Name><![CDATA[distribution_product1]]></Name>
-					<X>-240</X><Y>390</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1616685109386</Id>
-					<Name><![CDATA[distribution_product2]]></Name>
-					<X>-240</X><Y>410</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1616685118233</Id>
-					<Name><![CDATA[distribution_product3]]></Name>
-					<X>-240</X><Y>430</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1616685540614</Id>
-					<Name><![CDATA[distribution_supply]]></Name>
-					<X>-240</X><Y>450</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1614173363216</Id>
 					<Name><![CDATA[numberOfForklifts]]></Name>
@@ -564,30 +516,6 @@ workstations.get(6).setRotation(PI/2);
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1616664751310</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1616685370669</Id>
-					<Name><![CDATA[distributionTreshold]]></Name>
-					<X>-240</X><Y>470</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[int]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[2]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1616685370667</Id>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
@@ -1508,64 +1436,6 @@ if (releasePolicy == 1) { // Stay
 					<Body><![CDATA[double minn = Collections.min(throughput_prods);
 if (throughput != 0)
 	imbalance_prods = 1/((minn+1)/throughput);]]></Body>
-				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[boolean]]></ReturnType>
-					<Id>1616685234079</Id>
-					<Name><![CDATA[sendNewProduct]]></Name>
-					<X>-250</X><Y>350</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[productType]]></Name>
-						<Type><![CDATA[int]]></Type>
-					</Parameter>
-					<Body><![CDATA[switch(productType) {
-	case 0:
-		if ((distribution_product1-distribution_product2) <= distributionTreshold 
-			|| (distribution_product1-distribution_product2) <= distributionTreshold)
-			return true;
-		break;
-	case 1:
-		if ((distribution_product2-distribution_product1) <= distributionTreshold 
-			|| (distribution_product2-distribution_product3) <= distributionTreshold)
-			return true;
-		break;
-	case 2:
-		if ((distribution_product3-distribution_product1) <= distributionTreshold 
-			|| (distribution_product3-distribution_product2) <= distributionTreshold)
-			return true;
-		break;
-	default:
-		break;
-}
-return false;]]></Body>
-				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1616686715927</Id>
-					<Name><![CDATA[incrementCount]]></Name>
-					<X>-250</X><Y>370</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[productType]]></Name>
-						<Type><![CDATA[int]]></Type>
-					</Parameter>
-					<Body><![CDATA[if (productType == 0)
-	distribution_product1++;
-if (productType == 1)
-	distribution_product2++;
-if (productType == 2)
-	distribution_product3++;
-if (productType == 3)
-	distribution_supply++;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -16548,9 +16418,6 @@ main.updateProdBalance();]]></Code>
 				<Parameter>
 					<ParameterName><![CDATA[numOfConventionalForklifts]]></ParameterName>
 				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[distributionTreshold]]></ParameterName>
-				</Parameter>
 			</Parameters>			
 			<PresentationProperties>
 				<EnableZoomAndPanning>true</EnableZoomAndPanning>
@@ -17365,9 +17232,6 @@ switch (mode) {
 			<FreeformParamValue>	
 				<Id>1616664751312</Id>
 			</FreeformParamValue>
-			<FreeformParamValue>	
-				<Id>1616685370669</Id>
-			</FreeformParamValue>
 			<RangeVariationParamValue>	
 				<Id>1614173363216</Id>
 				<Type>FIXED</Type>
@@ -17408,10 +17272,6 @@ switch (mode) {
 				<Id>1616664751312</Id>
 				<Type>FIXED</Type>
 			</RangeVariationParamValue>
-			<RangeVariationParamValue>	
-				<Id>1616685370669</Id>
-				<Type>FIXED</Type>
-			</RangeVariationParamValue>
 			<ModelTimeProperties>
 				<StopOption><![CDATA[Stop at specified date]]></StopOption>
 				<InitialDate><![CDATA[1614153600000]]></InitialDate>	
@@ -17448,8 +17308,8 @@ switch (mode) {
 				<StopOption><![CDATA[Stop at specified date]]></StopOption>
 				<InitialDate><![CDATA[1614153600000]]></InitialDate>	
 				<InitialTime><![CDATA[0.0]]></InitialTime>	
-				<FinalDate><![CDATA[1614182400000]]></FinalDate>	
-				<FinalTime><![CDATA[28800.0]]></FinalTime>	
+				<FinalDate><![CDATA[1614164400000]]></FinalDate>	
+				<FinalTime><![CDATA[10800.0]]></FinalTime>	
 			</ModelTimeProperties>
 			<StopCondition><![CDATA[false]]></StopCondition>
 		</ReinforcementLearningExperiment>
