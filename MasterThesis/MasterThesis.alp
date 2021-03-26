@@ -262,6 +262,81 @@ workstations.get(6).setRotation(PI/2);
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616751680593</Id>
+					<Name><![CDATA[imbalance_startWS]]></Name>
+					<X>-860</X><Y>250</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616751696025</Id>
+					<Name><![CDATA[throughput_WS1]]></Name>
+					<X>-860</X><Y>280</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616751732276</Id>
+					<Name><![CDATA[throughput_WS2]]></Name>
+					<X>-860</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616751736459</Id>
+					<Name><![CDATA[throughput_WS3]]></Name>
+					<X>-860</X><Y>320</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1616751744624</Id>
+					<Name><![CDATA[total_startWS_throughput]]></Name>
+					<X>-860</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1614173363216</Id>
 					<Name><![CDATA[numberOfForklifts]]></Name>
@@ -397,7 +472,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[false]]></Code>
+							<Code><![CDATA[true]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1615447310969</Id>
@@ -684,6 +759,24 @@ workstations.get(6).setRotation(PI/2);
 						<ValueElementClass><![CDATA[String]]></ValueElementClass>
 						<CollectionInitializer Class="CodeValue">
 							<Code><![CDATA[{ supermarketDock, supermarketDock, homeDock, WS_3_4_dock, WS_2_7_dock }]]></Code>
+						</CollectionInitializer>
+					</Properties>
+
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1616753129952</Id>
+					<Name><![CDATA[throughput_WS_start]]></Name>
+					<X>-860</X><Y>220</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
+						<ElementClass><![CDATA[Double]]></ElementClass>
+						<ValueElementClass><![CDATA[String]]></ValueElementClass>
+						<CollectionInitializer Class="CodeValue">
+							<Code><![CDATA[{ throughput_WS1, throughput_WS2, throughput_WS3 }]]></Code>
 						</CollectionInitializer>
 					</Properties>
 
@@ -1422,6 +1515,26 @@ if (releasePolicy == 1) { // Stay
 if (throughput != 0)
 	imbalance_prods = 1/((minn+1)/throughput);]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1616751770322</Id>
+					<Name><![CDATA[updateWS_start_balance]]></Name>
+					<X>-860</X><Y>380</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[if (total_startWS_throughput >= 3) {
+	double minn = Collections.min(throughput_WS_start);
+	if (minn == 0) {
+		minn = 1;
+	}
+	if (total_startWS_throughput != 0) {
+		imbalance_startWS = total_startWS_throughput / (3*minn);
+	}
+}]]></Body>
+				</Function>
 			</Functions>
 			<AgentLinks>
 				<AgentLink>
@@ -2005,9 +2118,6 @@ unit.delay.stopDelayForAll();]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[usePolicy]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[true]]></Code>
-							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[policyFile]]></Name>
@@ -2050,6 +2160,10 @@ unit.delay.stopDelayForAll();]]></Code>
     double p2 = throughput_product2;
     double p3 = throughput_product3;
     double imbalance_pen = imbalance_prods;
+    double start_p1 = throughput_WS1;
+    double start_p2 = throughput_WS2;
+    double start_p3 = throughput_WS3;
+    double imbalance_start = imbalance_startWS;  
 	//double fullConveyor = fullFinishConveyor;
 	//individual rewards
 	double essentialDelivery = forklifts.get(agentId).essentialDelivery;
@@ -11331,6 +11445,34 @@ if(numOnFinish > 0)
 	return true;
 return false;]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1616751845686</Id>
+					<Name><![CDATA[updateStartWS]]></Name>
+					<X>1380</X><Y>60</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[product]]></Name>
+						<Type><![CDATA[Product]]></Type>
+					</Parameter>
+					<Body><![CDATA[if (product.stagesComplete != 1) {
+	return;
+}
+switch(product.productType) {
+	case 0:
+		main.throughput_WS1++;
+	case 1:
+		main.throughput_WS2++;
+	case 2:
+		main.throughput_WS3++;
+}
+main.total_startWS_throughput++;
+main.updateWS_start_balance();]]></Body>
+				</Function>
 			</Functions>
 			<AgentLinks>
 				<AgentLink>
@@ -13345,7 +13487,9 @@ numOnFinish--;]]></Code>
 							<Value Class="CodeValue">
 								<Code><![CDATA[Workstation w = main.workstations.get(agent.assignedForklift.deliveryMachine);
 w.enter.take(agent);
-agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.startTrip;]]></Code>
+agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.startTrip;
+
+updateStartWS(agent);]]></Code>
 							</Value>
 						</Parameter>
 					</Parameters>
@@ -16347,6 +16491,23 @@ main.updateProdBalance();]]></Code>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
 			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1616752631356</Id>
+					<Name><![CDATA[mode]]></Name>
+					<X>-110</X><Y>70</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+			</Variables>
 
 			<Presentation>
 				<Text>
@@ -16370,6 +16531,31 @@ main.updateProdBalance();]]></Code>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Control Type="RadioButtons">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1616752686638</Id>
+					<Name><![CDATA[radio]]></Name>
+					<X>60</X><Y>120</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="190" Height="100">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="18" Style="0"/>
+						<Orientation>VERTICAL</Orientation>
+						<Button><![CDATA[Pathmind Policy]]></Button>
+						<Button><![CDATA[Heuristic]]></Button>
+						<Button><![CDATA[Conventional]]></Button>
+						<LinkTo>true</LinkTo>
+						<Link>mode</Link>
+					</ExtendedProperties>
+				</Control>
 			</Presentation>
 
 			<Parameters>			
@@ -16390,9 +16576,15 @@ main.updateProdBalance();]]></Code>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[isPathmindEnabled]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[mode == 0]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[isConventionalEnabled]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[mode == 2]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[pickUpPolicy]]></ParameterName>
@@ -16419,7 +16611,7 @@ main.updateProdBalance();]]></Code>
 				<FinalDate><![CDATA[1614164400000]]></FinalDate>	
 				<FinalTime><![CDATA[10800.0]]></FinalTime>	
 			</ModelTimeProperties>
-			<BypassInitialScreen>true</BypassInitialScreen>
+			<BypassInitialScreen>false</BypassInitialScreen>
 		</SimulationExperiment>
 		<!--   =========  Parameter Variation Experiment   ========  -->
 		<ParamVariationExperiment ActiveObjectClassId="1614172472034">
@@ -16441,6 +16633,9 @@ switch (mode) {
 	case 1:
 		heuristic_throughput.reset();
 		break;
+	case 2:
+		conventional_throughput.reset();
+		break;
 }]]></BeforeEachExperimentRunCode>
 			<AfterSimulationRunCode><![CDATA[heuristic_throughput_product1.add(root.throughput_product1);
 heuristic_throughput_product2.add(root.throughput_product2);
@@ -16453,6 +16648,8 @@ switch (mode) {
 	case 1:
 		heuristic_throughput.add( root.throughput );
 		break;
+	case 2: 
+		conventional_throughput.add( root.throughput );
 }]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
@@ -16462,7 +16659,7 @@ switch (mode) {
 				<Variable Class="PlainVariable">
 					<Id>1615875390049</Id>
 					<Name><![CDATA[mode]]></Name>
-					<X>50</X><Y>630</Y>
+					<X>50</X><Y>660</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -16479,7 +16676,7 @@ switch (mode) {
     			<HistogramData>
 					<Id>1615294234771</Id>
 					<Name><![CDATA[heuristic_throughput]]></Name>
-					<X>50</X><Y>500</Y>
+					<X>240</X><Y>390</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -16510,7 +16707,7 @@ switch (mode) {
     			<HistogramData>
 					<Id>1615390608999</Id>
 					<Name><![CDATA[heuristic_throughput_product1]]></Name>
-					<X>50</X><Y>530</Y>
+					<X>50</X><Y>560</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -16541,7 +16738,7 @@ switch (mode) {
     			<HistogramData>
 					<Id>1615390634155</Id>
 					<Name><![CDATA[heuristic_throughput_product2]]></Name>
-					<X>50</X><Y>560</Y>
+					<X>50</X><Y>590</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -16572,7 +16769,7 @@ switch (mode) {
     			<HistogramData>
 					<Id>1615390638160</Id>
 					<Name><![CDATA[heuristic_throughput_product3]]></Name>
-					<X>50</X><Y>590</Y>
+					<X>50</X><Y>620</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -16603,7 +16800,38 @@ switch (mode) {
     			<HistogramData>
 					<Id>1615875444417</Id>
 					<Name><![CDATA[pathmind_throughput]]></Name>
-					<X>50</X><Y>470</Y>
+					<X>240</X><Y>360</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>false</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1602921600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+					<Value><![CDATA[]]></Value>
+					<NumberOfIntervals>30</NumberOfIntervals>
+					<MinMaxAutodetect>true</MinMaxAutodetect>
+					<RangeMinExpression><![CDATA[0]]></RangeMinExpression>
+					<RangeMaxExpression><![CDATA[1]]></RangeMaxExpression>
+					<InitialIntervalSize><![CDATA[1]]></InitialIntervalSize>
+					<CalculateCDF>true</CalculateCDF>
+					<CalculatePercentiles>false</CalculatePercentiles>
+					<LowPercent>10</LowPercent>
+					<HighPercent>10</HighPercent>
+					<Title><![CDATA[]]></Title>
+				</HistogramData>
+    			<HistogramData>
+					<Id>1616751930648</Id>
+					<Name><![CDATA[conventional_throughput]]></Name>
+					<X>240</X><Y>420</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -17055,24 +17283,34 @@ switch (mode) {
 						<RelativeWidth>0.73</RelativeWidth>
 					</Bars>
 					<HistogramDataExpression>
-					<Expression><![CDATA[heuristic_throughput]]></Expression>
+					<Expression><![CDATA[pathmind_throughput]]></Expression>
 						<ColorPDF>-2448096</ColorPDF>
 						<ColorCDF>-2354116</ColorCDF>
 						<ColorLowPercent>-2354116</ColorLowPercent>
 						<ColorHighPercent>-8097537</ColorHighPercent>
-						<ColorMean>-16744320</ColorMean>
+						<ColorMean>-2448096</ColorMean>
 						<LineWidth>1</LineWidth>						
-						<Title><![CDATA[Random- Throughput]]></Title>							
+						<Title><![CDATA[Pathmind ]]></Title>							
 					</HistogramDataExpression>
 					<HistogramDataExpression>
-					<Expression><![CDATA[pathmind_throughput]]></Expression>
+					<Expression><![CDATA[heuristic_throughput]]></Expression>
 						<ColorPDF>-9728477</ColorPDF>
 						<ColorCDF>-10496</ColorCDF>
 						<ColorLowPercent>-10496</ColorLowPercent>
 						<ColorHighPercent>-60269</ColorHighPercent>
 						<ColorMean>-9728477</ColorMean>
 						<LineWidth>1</LineWidth>						
-						<Title><![CDATA[Histogram Data Title]]></Title>							
+						<Title><![CDATA[Heuristic]]></Title>							
+					</HistogramDataExpression>
+					<HistogramDataExpression>
+					<Expression><![CDATA[conventional_throughput]]></Expression>
+						<ColorPDF>-16728065</ColorPDF>
+						<ColorCDF>-6632142</ColorCDF>
+						<ColorLowPercent>-6632142</ColorLowPercent>
+						<ColorHighPercent>-29696</ColorHighPercent>
+						<ColorMean>-16728065</ColorMean>
+						<LineWidth>1</LineWidth>						
+						<Title><![CDATA[Conventional]]></Title>							
 					</HistogramDataExpression>
     			</Histogram>
     			<Histogram>
@@ -17178,6 +17416,7 @@ switch (mode) {
 						<Orientation>VERTICAL</Orientation>
 						<Button><![CDATA[Pathmind Policy]]></Button>
 						<Button><![CDATA[Heuristic]]></Button>
+						<Button><![CDATA[Conventional]]></Button>
 						<LinkTo>true</LinkTo>
 						<Link>mode</Link>
 					</ExtendedProperties>
@@ -17204,9 +17443,15 @@ switch (mode) {
 			</FreeformParamValue>
 			<FreeformParamValue>	
 				<Id>1615447310971</Id>
+				<Expression Class="CodeValue">
+					<Code><![CDATA[mode == 0]]></Code>
+				</Expression>
 			</FreeformParamValue>
 			<FreeformParamValue>	
 				<Id>1615824735794</Id>
+				<Expression Class="CodeValue">
+					<Code><![CDATA[mode == 2]]></Code>
+				</Expression>
 			</FreeformParamValue>
 			<FreeformParamValue>	
 				<Id>1616071566616</Id>
