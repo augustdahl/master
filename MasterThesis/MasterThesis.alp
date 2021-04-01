@@ -337,6 +337,33 @@ workstations.get(6).setRotation(PI/2);
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1617013192700</Id>
+					<Name><![CDATA[pickupImbalanceFound]]></Name>
+					<X>-130</X><Y>340</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1617091409489</Id>
+					<Name><![CDATA[deliveryImbalanceFound]]></Name>
+					<X>-130</X><Y>540</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1614173363216</Id>
 					<Name><![CDATA[numberOfForklifts]]></Name>
@@ -583,6 +610,54 @@ workstations.get(6).setRotation(PI/2);
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="Parameter">
+					<Id>1617013093336</Id>
+					<Name><![CDATA[pickupTreshold]]></Name>
+					<X>-130</X><Y>240</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[2]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1617013093334</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1617091314228</Id>
+					<Name><![CDATA[deliveryTreshold]]></Name>
+					<X>-130</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[2]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1617091314226</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1614246580858</Id>
 					<Name><![CDATA[supermarketCollection]]></Name>
@@ -781,6 +856,42 @@ workstations.get(6).setRotation(PI/2);
 					</Properties>
 
 				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1617013121573</Id>
+					<Name><![CDATA[pickupCounts]]></Name>
+					<X>-130</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
+						<ElementClass><![CDATA[Integer]]></ElementClass>
+						<ValueElementClass><![CDATA[String]]></ValueElementClass>
+						<CollectionInitializer Class="CodeValue">
+							<Code><![CDATA[{0, 0, 0}]]></Code>
+						</CollectionInitializer>
+					</Properties>
+
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1617091357084</Id>
+					<Name><![CDATA[deliveryCounts]]></Name>
+					<X>-130</X><Y>520</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
+						<ElementClass><![CDATA[Integer]]></ElementClass>
+						<ValueElementClass><![CDATA[String]]></ValueElementClass>
+						<CollectionInitializer Class="CodeValue">
+							<Code><![CDATA[{0, 0, 0}]]></Code>
+						</CollectionInitializer>
+					</Properties>
+
+				</Variable>
 			</Variables>
 			<Functions>
 				<Function AccessType="default" StaticFunction="false">
@@ -904,19 +1015,26 @@ if( (isSupply && destination.hasSpaceForSupply())
 	if(destination.isEssentialDelivery(isSupply)) {
 		currentForklift.essentialDelivery++;
 	}
-
+	
 	//update expected nembers for destination
-	if(isSupply)
+	if(isSupply) {
 		destination.numExpectedSupply++;
-	else
+	} else {
+		if (!balancedDelivery(product.productType)) { // Check if delivery contributes to balanced flow
+			deliveryImbalanceFound++;
+			return;
+		}
 		destination.numExpectedProd++;
+	}
 	
 	currentForklift.assignedProduct = product;
 	currentForklift.origin = origin;
 	//System.out.println("sendTo_supermarket machine: " + dest_machine);
 	currentForklift.deliveryMachine = dest_machine;
-
 	product.assignedForklift = currentForklift;
+	
+	if (!isSupply)
+		incrementDeliveryCount(product.productType);
 
 	waitBlock.freeAll();
 } else {
@@ -980,6 +1098,12 @@ Workstation destination = workstations.get(dest_machine);
 
 if(destination.hasSpaceOnConveyor()){	//is there space in destination
 
+	// If not pickup contributes to balanced flow
+	if (!balancedPickup(product.productType)) {
+		pickupImbalanceFound++;
+		return;
+	}
+
 	//check essential delivery
 	if(destination.isEssentialDelivery(false)) {
 		currentForklift.essentialDelivery++;
@@ -994,6 +1118,9 @@ if(destination.hasSpaceOnConveyor()){	//is there space in destination
 	currentForklift.origin = origin;
 	currentForklift.deliveryMachine = dest_machine;
 	product.assignedForklift = currentForklift;
+	
+	incrementPickupCount(product.productType);
+	
 	
 	waitBlock.freeAll();
 } else {
@@ -1168,8 +1295,7 @@ return obs;]]></Body>
 						<Name><![CDATA[agentId]]></Name>
 						<Type><![CDATA[int]]></Type>
 					</Parameter>
-					<Body><![CDATA[//System.out.println(imbalance_pros);
-if(origin < 4) { 
+					<Body><![CDATA[if(origin < 4) { 
 	//origin is one of 4 supermarkets
 	sendTo_supermarket(origin, dest_machine, agentId);
 }
@@ -1535,6 +1661,94 @@ if (throughput != 0)
 	}
 }]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1617012992111</Id>
+					<Name><![CDATA[incrementPickupCount]]></Name>
+					<X>-130</X><Y>260</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[productType]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[int oldValue = pickupCounts.get(productType)+1;
+pickupCounts.set(productType, oldValue);]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1617013044570</Id>
+					<Name><![CDATA[balancedPickup]]></Name>
+					<X>-130</X><Y>280</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[productType]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[int currCount = pickupCounts.get(productType);
+double discrepancy = 0;
+for (int i = 0 ; i < pickupCounts.size(); i++) {
+	if (i == productType)
+		continue;
+	int cnt = pickupCounts.get(i);
+	if (currCount-cnt > discrepancy)
+		discrepancy = currCount-cnt;
+}
+if (discrepancy > pickupTreshold)
+	return false;
+return true;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1617091332441</Id>
+					<Name><![CDATA[incrementDeliveryCount]]></Name>
+					<X>-130</X><Y>450</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[productType]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[int oldValue = deliveryCounts.get(productType)+1;
+deliveryCounts.set(productType, oldValue);]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1617091447118</Id>
+					<Name><![CDATA[balancedDelivery]]></Name>
+					<X>-130</X><Y>480</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[productType]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[int currCount = deliveryCounts.get(productType);
+double discrepancy = 0;
+for (int i = 0 ; i < deliveryCounts.size(); i++) {
+	if (i == productType)
+		continue;
+	int cnt = deliveryCounts.get(i);
+	if (currCount-cnt > discrepancy)
+		discrepancy = currCount-cnt;
+}
+if (discrepancy > deliveryTreshold)
+	return false;
+return true;]]></Body>
+				</Function>
 			</Functions>
 			<AgentLinks>
 				<AgentLink>
@@ -1820,7 +2034,8 @@ if (throughput != 0)
 							<Value Class="CodeValue">
 								<Code><![CDATA[unit.trips++;
 unit.source.inject(1);
-]]></Code>
+
+unit.idleTime = time() - unit.startIdle;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -1833,7 +2048,8 @@ unit.assignedProduct = null;
 
 queryAnAction(unit);
 
-unit.delay.stopDelayForAll();]]></Code>
+unit.delay.stopDelayForAll();
+unit.startIdle = time();]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -2122,7 +2338,7 @@ unit.delay.stopDelayForAll();]]></Code>
 						<Parameter>
 							<Name><![CDATA[policyFile]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA["/Users/axel/Downloads/Fixedhome-M1-masterthesis-E2-Policy.zip"]]></Code>
+								<Code><![CDATA["/Users/axel/Downloads/Returnonpickndelivery-M1-masterthesis-E13-Policy.zip"]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -2159,12 +2375,14 @@ unit.delay.stopDelayForAll();]]></Code>
     double p1 = throughput_product1;
     double p2 = throughput_product2;
     double p3 = throughput_product3;
-    double imbalance_pen = imbalance_prods;
-    double start_p1 = throughput_WS1;
-    double start_p2 = throughput_WS2;
-    double start_p3 = throughput_WS3;
-    double imbalance_start = imbalance_startWS;  
-	//double fullConveyor = fullFinishConveyor;
+    //double imbalance_pen = imbalance_prods;
+    //double start_p1 = throughput_WS1;
+    //double start_p2 = throughput_WS2;
+    //double start_p3 = throughput_WS3;
+    //double imbalance_start = imbalance_startWS;
+    double pickupImbalance = pickupImbalanceFound;  
+    double deliveryImbalance = deliveryImbalanceFound;
+	double fullConveyor = fullFinishConveyor;
 	//individual rewards
 	double essentialDelivery = forklifts.get(agentId).essentialDelivery;
 	double essentialPickup = forklifts.get(agentId).essentialPickup;
@@ -2172,10 +2390,11 @@ unit.delay.stopDelayForAll();]]></Code>
 	double tripDuration = time() - forklifts.get(agentId).startTrip;
 	double aveTripDuration = forklifts.get(agentId).avgTripDuration(); 
 	double emptyOrigins = forklifts.get(agentId).emptyOrigins;
-	//double fullQueue = forklifts.get(agentId).fullQueue;
+	double fullQueue = forklifts.get(agentId).fullQueue;
 	double invalid = forklifts.get(agentId).invalidAction;
 	double forkliftUtilization = forklifts.get(agentId).resourcePool.utilization();
 	double timeToPickup = forklifts.get(agentId).travelToPickupTime;
+	double idleTime = forklifts.get(agentId).idleTime;
     
 }]]></Code>
 							</Value>
@@ -6571,6 +6790,36 @@ unit.delay.stopDelayForAll();]]></Code>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1617205300495</Id>
+					<Name><![CDATA[idleTime]]></Name>
+					<X>330</X><Y>120</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1617205414038</Id>
+					<Name><![CDATA[startIdle]]></Name>
+					<X>340</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
 					</Properties>
 				</Variable>
 			</Variables>
@@ -13489,7 +13738,7 @@ numOnFinish--;]]></Code>
 w.enter.take(agent);
 agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.startTrip;
 
-updateStartWS(agent);]]></Code>
+//updateStartWS(agent);]]></Code>
 							</Value>
 						</Parameter>
 					</Parameters>
@@ -15170,7 +15419,7 @@ agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.star
 main.throughput++;
 productReadyForEnd = null;
 //agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.startTrip;
-main.updateProdBalance();]]></Code>
+//main.updateProdBalance();]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -16595,6 +16844,12 @@ main.updateProdBalance();]]></Code>
 				<Parameter>
 					<ParameterName><![CDATA[numOfConventionalForklifts]]></ParameterName>
 				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[pickupTreshold]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[deliveryTreshold]]></ParameterName>
+				</Parameter>
 			</Parameters>			
 			<PresentationProperties>
 				<EnableZoomAndPanning>true</EnableZoomAndPanning>
@@ -17462,6 +17717,12 @@ switch (mode) {
 			<FreeformParamValue>	
 				<Id>1616664751312</Id>
 			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1617013093336</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1617091314228</Id>
+			</FreeformParamValue>
 			<RangeVariationParamValue>	
 				<Id>1614173363216</Id>
 				<Type>FIXED</Type>
@@ -17500,6 +17761,14 @@ switch (mode) {
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
 				<Id>1616664751312</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1617013093336</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1617091314228</Id>
 				<Type>FIXED</Type>
 			</RangeVariationParamValue>
 			<ModelTimeProperties>
