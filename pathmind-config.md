@@ -19,13 +19,14 @@ class Observations {
 ## Metrics
 ```java
 class Metrics {
-    //collective rewards
-    double totalThroughput = throughput;
-    double p1 = throughput_product1;
-    double p2 = throughput_product2;
-    double p3 = throughput_product3;
-    double imbalance_pen = imbalance_prods;
-	//double fullConveyor = fullFinishConveyor;
+   //collective rewards
+   double totalThroughput = throughput;
+   double p1 = throughput_product1;
+   double p2 = throughput_product2;
+   double p3 = throughput_product3;
+   double pickupImbalance = pickupImbalanceFound;  
+   double deliveryImbalance = deliveryImbalanceFound;
+	double fullConveyor = fullFinishConveyor;
 	//individual rewards
 	double essentialDelivery = forklifts.get(agentId).essentialDelivery;
 	double essentialPickup = forklifts.get(agentId).essentialPickup;
@@ -33,11 +34,11 @@ class Metrics {
 	double tripDuration = time() - forklifts.get(agentId).startTrip;
 	double aveTripDuration = forklifts.get(agentId).avgTripDuration(); 
 	double emptyOrigins = forklifts.get(agentId).emptyOrigins;
-	//double fullQueue = forklifts.get(agentId).fullQueue;
+	double fullQueue = forklifts.get(agentId).fullQueue;
 	double invalid = forklifts.get(agentId).invalidAction;
 	double forkliftUtilization = forklifts.get(agentId).resourcePool.utilization();
 	double timeToPickup = forklifts.get(agentId).travelToPickupTime;
-    
+	double idleTime = forklifts.get(agentId).idleTime;   
 }
 ```
 
@@ -48,7 +49,9 @@ totalThroughput | Sum of p1, p2 and p3 throughput
 p1 | Product 1 throughput
 p2 | Product 2 throughput
 p3 | Product 3 throughput
-imbalance_pen | Penalizes the agent by the difference between lowest and highest throughput (updateProdBalance())
+pickupImbalance | Counts number of times a pickup action of a product increased the difference between number of picked up products by a certain treshold. The action is never carried out in this case.
+deliveryImbalance | Counts number of times a delivery action of a product increased the difference between number of delivered up products by a certain treshold. The action is never carried out in this case.
+fullConveyor | The number of times all WS have had full finish conveyors.
 ***
 ### Individual metrics
 Metric| Description
@@ -62,7 +65,7 @@ fullQueue | sendTo-action attempts to drop off at WS with a full conveyor
 invalid | sendTo-action attempts to send product to invalid WS (not following the flow pattern)
 forkliftUtilization | Utilization
 timeToPickup | Duration (sec) from seizing forklift to pick-up at WS or supermarket
-
+idleTime | The time spent idle for a forklift without being assigned to any task
 ***
 
 ## Actions
