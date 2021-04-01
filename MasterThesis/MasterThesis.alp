@@ -623,7 +623,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[2]]></Code>
+							<Code><![CDATA[1]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1617013093334</Id>
@@ -647,7 +647,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[2]]></Code>
+							<Code><![CDATA[1]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1617091314226</Id>
@@ -2338,7 +2338,7 @@ unit.startIdle = time();]]></Code>
 						<Parameter>
 							<Name><![CDATA[policyFile]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA["/Users/axel/Downloads/Returnonpickndelivery-M1-masterthesis-E13-Policy.zip"]]></Code>
+								<Code><![CDATA["/Users/axel/Downloads/Returnonpickndelivery-M1-masterthesis-E4-Policy.zip"]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
