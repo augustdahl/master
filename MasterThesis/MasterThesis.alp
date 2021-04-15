@@ -1441,10 +1441,10 @@ Workstation dest_firstStage = list_firstStage.get(choice); // Randomly drawn pro
 
 int origin = dest_firstStage.machineNumber;
 if(supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor()){
-	//System.out.println("Sending PRODUCT " + (origin+1) +  " to workstation " + (dest_firstStage.machineNumber+1));
-	//System.out.println("Number of products on line: " + dest_firstStage.totalProd_inStorageAndExpected());
-	sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId);
-	return true;
+	if (balancedPickup(choice)) {
+		sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId);
+		return true;
+	}
 }
 return false;]]></Body>
 				</Function>
