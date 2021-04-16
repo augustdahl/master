@@ -610,7 +610,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1618253004777</Id>
 					<Name><![CDATA[minArrival]]></Name>
-					<X>-810</X><Y>550</Y>
+					<X>-820</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -634,7 +634,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1618253004782</Id>
 					<Name><![CDATA[maxArrival]]></Name>
-					<X>-810</X><Y>570</Y>
+					<X>-820</X><Y>600</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -658,7 +658,7 @@ workstations.get(6).setRotation(PI/2);
 				<Variable Class="Parameter">
 					<Id>1618253012443</Id>
 					<Name><![CDATA[isUncertainArrival]]></Name>
-					<X>-830</X><Y>530</Y>
+					<X>-840</X><Y>560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -673,6 +673,78 @@ workstations.get(6).setRotation(PI/2);
 						<ParameterEditor>
 							<Id>1618253012441</Id>
 							<EditorContolType>CHECK_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1618580192283</Id>
+					<Name><![CDATA[initialTimeToFail]]></Name>
+					<X>-840</X><Y>630</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[7000 + uniform_discr(-1000, 1000)]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1618580192281</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1618580283784</Id>
+					<Name><![CDATA[timeToNextFail]]></Name>
+					<X>-840</X><Y>650</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[4000 + uniform_discr(-2000, 2000)]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1618580283782</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1618580300707</Id>
+					<Name><![CDATA[timeToRepair]]></Name>
+					<X>-840</X><Y>670</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[triangularAV(1000, 0.1)]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1618580300705</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
@@ -943,7 +1015,6 @@ switch (rInt) {
 	case 1: if (heuristicWsPickup(agentId)) return;
 	case 2: if (heuristicProductToWs(agentId)) return;
 }*/
-
 if (heuristicWsSupply(agentId)) { // Supplies WS with biggest feedProd queue size
 	return;
 }
@@ -6443,6 +6514,27 @@ unit.timeUtilized += time() - unit.timeSeized;]]></Code>
 					<Rotation>0.0</Rotation>
 					<Color>-16777216</Color>
 					<Text><![CDATA[Return]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>16</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1618580145401</Id>
+					<Name><![CDATA[text18]]></Name>
+					<X>-850</X><Y>510</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Uncertainty ]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>16</Size>
@@ -14875,12 +14967,16 @@ productsForPickup.add(agent);]]></Code>
 						<Parameter>
 							<Name><![CDATA[initialTimeToFailure]]></Name>
 							<Value Class="CodeUnitValue">
-								<Code><![CDATA[uniform( 4000, 10000 )]]></Code>
+								<Code><![CDATA[main.initialTimeToFail]]></Code>
 								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[timeBetweenFailures]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[main.timeToNextFail]]></Code>
+								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[countBusyOnlyTimeToFailure]]></Name>
@@ -14891,7 +14987,7 @@ productsForPickup.add(agent);]]></Code>
 						<Parameter>
 							<Name><![CDATA[repairTime]]></Name>
 							<Value Class="CodeUnitValue">
-								<Code><![CDATA[triangularAV( 1000, 0.5 )]]></Code>
+								<Code><![CDATA[main.timeToRepair]]></Code>
 								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 							</Value>
 						</Parameter>
@@ -17018,7 +17114,7 @@ productReadyForEnd = null;
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
 			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
 			<MaximumMemory>16384</MaximumMemory>
-			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
@@ -17169,6 +17265,15 @@ productReadyForEnd = null;
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[isUncertainArrival]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[initialTimeToFail]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[timeToNextFail]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[timeToRepair]]></ParameterName>
 				</Parameter>
 			</Parameters>			
 			<PresentationProperties>
@@ -18163,6 +18268,15 @@ switch (mode) {
 			<FreeformParamValue>	
 				<Id>1618253012443</Id>
 			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1618580192283</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1618580283784</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1618580300707</Id>
+			</FreeformParamValue>
 			<RangeVariationParamValue>	
 				<Id>1614173363216</Id>
 				<Type>FIXED</Type>
@@ -18225,6 +18339,18 @@ switch (mode) {
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
 				<Id>1618253012443</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1618580192283</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1618580283784</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1618580300707</Id>
 				<Type>FIXED</Type>
 			</RangeVariationParamValue>
 			<ModelTimeProperties>
