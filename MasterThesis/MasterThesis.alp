@@ -472,7 +472,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[2
+							<Code><![CDATA[1
 // 1 --> Longest wait time
 // 2 --> Shortest travel distance]]></Code>
 						</DefaultValue>
@@ -498,7 +498,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[0 // 0 --> Nearest home
+							<Code><![CDATA[1 // 0 --> Nearest home
 // 1 --> Keep pre-defined home]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
@@ -619,7 +619,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[5]]></Code>
+							<Code><![CDATA[3]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1618253004775</Id>
@@ -643,7 +643,7 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[9]]></Code>
+							<Code><![CDATA[6]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1618253004780</Id>
@@ -691,8 +691,8 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[500 + uniform_discr(-500, 1500)
-//7000 + uniform_discr(-4000, 2000)]]></Code>
+							<Code><![CDATA[//7000 + uniform_discr(-2000, 2000)
+7000 + uniform_discr(-4000, 2000)]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1618580192281</Id>
@@ -716,8 +716,8 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[4000 + uniform_discr(-2000, 2000)
-//2000 + uniform_discr(-2000, 2000)]]></Code>
+							<Code><![CDATA[//4000 + uniform_discr(-2000, 2000)
+1000 + uniform_discr(-1000, 1000)]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1618580283782</Id>
@@ -741,7 +741,8 @@ workstations.get(6).setRotation(PI/2);
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[triangularAV(2000, 0.1)]]></Code>
+							<Code><![CDATA[//triangularAV(2000, 0.1)
+triangularAV(3000, 0.1)]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1618580300705</Id>
@@ -1163,8 +1164,8 @@ Wait waitBlock = sl_origin.wait;
 Workstation destination = workstations.get(dest_machine);
 
 
-if( (isSupply && destination.hasSpaceForSupply())
-	|| (!isSupply && destination.hasSpaceOnConveyor()) ){
+if( (isSupply && destination.hasSpaceForSupply() && !destination.isWsFailure)
+	|| (!isSupply && destination.hasSpaceOnConveyor() && !destination.isWsFailure) ){
 	
 	//check essential delivery
 	if(destination.isEssentialDelivery(isSupply)) {
@@ -1252,7 +1253,7 @@ Wait waitBlock = w_origin.wait;
 //one stage to the next
 Workstation destination = workstations.get(dest_machine);
 
-if(destination.hasSpaceOnConveyor()){	//is there space in destination
+if(destination.hasSpaceOnConveyor() && !destination.isWsFailure){	//is there space in destination
 
 	// If not pickup contributes to balanced flow
 	if (!balancedPickup(product.productType)) {
@@ -1364,7 +1365,7 @@ return obs;]]></Body>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[double[] obs = new double[7*workstations.size()];
+					<Body><![CDATA[double[] obs = new double[8*workstations.size()];
 
 int count = 0;
 for ( Workstation w : workstations ) {
@@ -1377,6 +1378,7 @@ for ( Workstation w : workstations ) {
 	obs[count++] = w.isProcessPickupPossible() ? 1 : 0;
 	obs[count++] = w.isFinishPickupPossible() ? 1 : 0;
 	obs[count++] = w.numOnFinish;
+	obs[count++] = w.isWsFailure ? 0 : 1;
 }
 
 return obs;]]></Body>
@@ -1513,7 +1515,7 @@ list_needSupply = sortDescending(filter(workstations, y -> y.totalProd_inStorage
 
 if(list_needSupply.size() > 0){
 	Workstation dest = list_needSupply.get(0); //find machine most in need for raw material
-	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply()) {
+	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply() && !dest.isWsFailure) {
 		//System.out.println("Sending SUPPLY to workstation " + dest.machineNumber);
 		//System.out.println("Number of supply on line: " + dest.totalSupply_inStorageAndExpected());
 		sendTo_supermarket(3, dest.machineNumber, agentId);
@@ -1557,7 +1559,7 @@ for(Workstation w : sortedWS){
 	}
 	if(w.isProcessPickupPossible()) { //if there is a pickup possible
 		Workstation dest = workstations.get(w.machineNumber + 2);
-		if(dest.hasSpaceOnConveyor()){
+		if(dest.hasSpaceOnConveyor() && !dest.isWsFailure){
 			//String s = "Sending forklift " + agentId + " to workstation " + origin + " delivery to " + dest.machineNumber;
 			//System.out.println(s);
 			sendTo_workstation(origin, dest.machineNumber, agentId);
@@ -1588,7 +1590,7 @@ int choice = uniform_discr(0, 2);
 Workstation dest_firstStage = list_firstStage.get(choice); // Randomly drawn product is chosen
 
 int origin = dest_firstStage.machineNumber;
-if(supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor()){
+if(supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor() && !dest_firstStage.isWsFailure){
 	if (balancedPickup(choice)) {
 		sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId);
 		return true;
@@ -1658,7 +1660,7 @@ for(Workstation w : ws_list){
 		}
 		if(w.isProcessPickupPossible()) { //if there is a pickup possible
 			Workstation dest = workstations.get(w.machineNumber + 2);
-			if(dest.hasSpaceOnConveyor()){
+			if(dest.hasSpaceOnConveyor() && !dest.isWsFailure){
 				sendTo_workstation(origin, dest.machineNumber, agentId);
 				return;
 			}
@@ -1687,7 +1689,7 @@ List<Workstation> list_needSupply = sortDescending(filter(workstations, y -> y.t
 
 if(list_needSupply.size() > 0){
 	Workstation dest = list_needSupply.get(0); //find machine most in need for raw material
-	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply()) {
+	if(supermarkets.get(3).isPickupPossible() && dest.hasSpaceForSupply() && !dest.isWsFailure) {
 		sendTo_supermarket(3, dest.machineNumber, agentId);
 		return;
 	}
@@ -1698,7 +1700,7 @@ int choice = uniform_discr(0, 2);
 Workstation dest_firstStage = list_firstStage.get(choice); // Randomly drawn product is chosen
 
 int origin = dest_firstStage.machineNumber;
-if(supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor()){
+if(supermarkets.get(origin).isPickupPossible() && dest_firstStage.hasSpaceOnConveyor() && !dest_firstStage.isWsFailure){
 	sendTo_supermarket(origin, dest_firstStage.machineNumber, agentId);
 	return;
 }
@@ -1894,13 +1896,15 @@ return true;]]></Body>
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1618836234036</Id>
-					<Name><![CDATA[initialTimeTFail]]></Name>
+					<Name><![CDATA[numProductsToFailure]]></Name>
 					<X>-820</X><Y>720</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[return 7000 + uniform_discr(-3000,3000);]]></Body>
+					<Body><![CDATA[//return 20 + uniform_discr(0, 5);
+//return 10 + uniform_discr(0, 5);
+return 5 + uniform_discr(0, 5);]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
@@ -2518,7 +2522,7 @@ unit.timeUtilized += time() - unit.timeSeized;]]></Code>
 						<Parameter>
 							<Name><![CDATA[policyFile]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA["/Users/axel/Documents/MASTER/master-thesis/AnyLogic/master/policies/sc5-e2-temp.zip"]]></Code>
+								<Code><![CDATA["/Users/axel/Documents/MASTER/master-thesis/AnyLogic/master/policies/sc9.zip"]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -11191,6 +11195,21 @@ main.supplyEntry]]></Code>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[false]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1621062119076</Id>
+					<Name><![CDATA[numProductsProcessedFailure]]></Name>
+					<X>200</X><Y>60</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
 					</Properties>
 				</Variable>
 				<Variable Class="Parameter">
@@ -11536,7 +11555,7 @@ main.supplyEntry]]></Code>
 				<Connector>
 					<Id>1614585772999</Id>
 					<Name><![CDATA[connector5]]></Name>
-					<X>120</X><Y>-200</Y>
+					<X>880</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -11562,8 +11581,8 @@ main.supplyEntry]]></Code>
 						<ItemName><![CDATA[out]]></ItemName>
 					</TargetConnectableItemReference>
 					<Points>
-						<Point><X>760</X><Y>330</Y></Point>
-						<Point><X>710</X><Y>330</Y></Point>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-30</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -11729,39 +11748,6 @@ main.supplyEntry]]></Code>
 					<Points>
 						<Point><X>990</X><Y>270</Y></Point>
 						<Point><X>970</X><Y>270</Y></Point>
-					</Points>
-				</Connector>
-				<Connector>
-					<Id>1614585802618</Id>
-					<Name><![CDATA[connector]]></Name>
-					<X>740</X><Y>130</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<SourceEmbeddedObjectReference>
-						<PackageName><![CDATA[masterthesis]]></PackageName>
-						<ClassName><![CDATA[Workstation]]></ClassName>
-						<ItemName><![CDATA[pickup]]></ItemName>
-					</SourceEmbeddedObjectReference>
-					<SourceConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[Pickup]]></ClassName>
-						<ItemName><![CDATA[out]]></ItemName>
-					</SourceConnectableItemReference>
-					<TargetEmbeddedObjectReference>
-						<PackageName><![CDATA[masterthesis]]></PackageName>
-						<ClassName><![CDATA[Workstation]]></ClassName>
-						<ItemName><![CDATA[hold]]></ItemName>
-					</TargetEmbeddedObjectReference>
-					<TargetConnectableItemReference>
-						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
-						<ClassName><![CDATA[Hold]]></ClassName>
-						<ItemName><![CDATA[in]]></ItemName>
-					</TargetConnectableItemReference>
-					<Points>
-						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>70</X><Y>0</Y></Point>
 					</Points>
 				</Connector>
 				<Connector>
@@ -11960,6 +11946,140 @@ main.supplyEntry]]></Code>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
 						<Point><X>-70</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
+					<Id>1621065074624</Id>
+					<Name><![CDATA[connector]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[pickup]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[Pickup]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[checkFailure]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[SelectOutput]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>740</X><Y>130</Y></Point>
+						<Point><X>760</X><Y>130</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
+					<Id>1621065074625</Id>
+					<Name><![CDATA[connector6]]></Name>
+					<X>780</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[checkFailure]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[SelectOutput]]></ClassName>
+						<ItemName><![CDATA[outT]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[hold]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[Hold]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>50</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
+					<Id>1621065083124</Id>
+					<Name><![CDATA[connector22]]></Name>
+					<X>780</X><Y>190</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[FailureRepair]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[Delay]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[checkFailure]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[SelectOutput]]></ClassName>
+						<ItemName><![CDATA[outF]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-10</X><Y>0</Y></Point>
+						<Point><X>-10</X><Y>-50</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
+					<Id>1621065094612</Id>
+					<Name><![CDATA[connector23]]></Name>
+					<X>820</X><Y>190</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[FailureRepair]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[Delay]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[masterthesis]]></PackageName>
+						<ClassName><![CDATA[Workstation]]></ClassName>
+						<ItemName><![CDATA[hold]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[Hold]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>10</X><Y>0</Y></Point>
+						<Point><X>10</X><Y>-60</Y></Point>
 					</Points>
 				</Connector>
 			</Connectors>
@@ -12186,6 +12306,22 @@ return false;]]></Body>
 if(numOnFinish > 0) 
 	return true;
 return false;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[boolean]]></ReturnType>
+					<Id>1621065238046</Id>
+					<Name><![CDATA[failureControlMethod]]></Name>
+					<X>790</X><Y>250</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[if (numProductsProcessedFailure > main.numProductsToFailure()) {
+	numProductsProcessedFailure = 0;
+	return false;
+}
+return true;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -13829,6 +13965,9 @@ numExpectedSupply--;]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[resourceSelectionMode]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.RESOURCE_SELECTION_NEAREST]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[resourceRating]]></Name>
@@ -13878,7 +14017,8 @@ numExpectedSupply--;]]></Code>
 								<Code><![CDATA[agent.stagesComplete++;
 feedProdSize--;
 feedSupplySize--;
-numOnFinish++;]]></Code>
+numOnFinish++;
+numProductsProcessedFailure++;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -14363,7 +14503,7 @@ agent.assignedForklift.travelToPickupTime = time() - agent.assignedForklift.star
 				<EmbeddedObject>
 					<Id>1614585772906</Id>
 					<Name><![CDATA[hold]]></Name>
-					<X>810</X><Y>120</Y>
+					<X>830</X><Y>120</Y>
 					<Label><X>-10</X><Y>-20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -15044,6 +15184,9 @@ productsForPickup.add(agent);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[endOfShiftTaskPreemptionPolicy]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[self.PP_TERMINATE]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[endOfShiftTaskMayPreemptOtherTasks]]></Name>
@@ -15069,20 +15212,22 @@ productsForPickup.add(agent);]]></Code>
 						<Parameter>
 							<Name><![CDATA[enableFailuresRepairs]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[main.isFailureEnabled]]></Code>
+								<Code><![CDATA[main.isFailureEnabled ? false : false;]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[initialTimeToFailure]]></Name>
 							<Value Class="CodeUnitValue">
-								<Code><![CDATA[main.initialTimeTFail()]]></Code>
+								<Code><![CDATA[//main.initialTimeTFail()
+0]]></Code>
 								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[timeBetweenFailures]]></Name>
 							<Value Class="CodeUnitValue">
-								<Code><![CDATA[main.timeTNextFail()]]></Code>
+								<Code><![CDATA[//main.timeTNextFail()
+30000]]></Code>
 								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 							</Value>
 						</Parameter>
@@ -15105,7 +15250,7 @@ productsForPickup.add(agent);]]></Code>
 						<Parameter>
 							<Name><![CDATA[repairUsageState]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[self.USAGE_BUSY]]></Code>
+								<Code><![CDATA[self.USAGE_IDLE]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -15202,9 +15347,6 @@ machineSpace.setLineColor(black);]]></Code>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[downtimeSource]]></Name>
-							<Value Class="CodeValue">
-								<Code><![CDATA[self.DOWNTIME_RESOURCE_POOL_PROPERTIES]]></Code>
-							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[downtimeList]]></Name>
@@ -16185,6 +16327,201 @@ productReadyForEnd = null;
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExit]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRemove]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1621065070329</Id>
+					<Name><![CDATA[checkFailure]]></Name>
+					<X>750</X><Y>120</Y>
+					<Label><X>-25</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[SelectOutput]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+							<ClassName><![CDATA[SelectOutput]]></ClassName>
+							<ItemName><![CDATA[1412336242931]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[conditionIsProbabilistic]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[false]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[condition]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[main.isFailureEnabled ? failureControlMethod() : true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[probability]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onAtEnter]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnter]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitTrue]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExitFalse]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1621065080935</Id>
+					<Name><![CDATA[FailureRepair]]></Name>
+					<X>780</X><Y>170</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+						<ClassName><![CDATA[Delay]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.processmodeling]]></PackageName>
+							<ClassName><![CDATA[Delay]]></ClassName>
+							<ItemName><![CDATA[1412336242930]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[type]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[delayTime]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[main.timeToRepair]]></Code>
+								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maximumCapacity]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[entityLocation]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pushProtocol]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[restoreEntityLocationOnExit]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[forceStatisticsCollection]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEnter]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[isWsFailure = true;
+machineSpace.setLineColor(RED);]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onAtExit]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onExit]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[isWsFailure = false;
+machineSpace.setLineColor(black);]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onRemove]]></Name>
